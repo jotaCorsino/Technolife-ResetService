@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ResetService.Core/ResetService.Core.csproj" />
+    <Project Path="src/ResetService.Infrastructure/ResetService.Infrastructure.csproj" />
+    <Project Path="src/ResetService.Web/ResetService.Web.csproj" />
+  </Folder>
+</Solution>

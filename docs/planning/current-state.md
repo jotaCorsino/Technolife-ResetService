@@ -11,8 +11,8 @@
 
 - Backlog item: BL-001 — Estrutura inicial da solução
 - Tarefa: BL-001/T01 — Criar solution e projetos iniciais
-- Status: Pronta para implementação
-- Responsável técnico: Codex
+- Status: Em validação
+- Responsável técnico: Revisão ChatGPT
 
 ## Último estado aprovado
 
@@ -32,7 +32,7 @@ Nenhum.
 
 ## Próximo passo
 
-Executar o prompt de BL-001/T01 para criar a estrutura inicial da solution e dos projetos.
+Verificar no GitHub a entrega de BL-001/T01.
 
 ## Observações imediatas
 
