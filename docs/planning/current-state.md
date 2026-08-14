@@ -4,27 +4,27 @@
 
 - Versão alvo: v1.0
 - Fase: 1 — Fundação da solução
-- Sprint: 01 — Estrutura da solução
+- Sprint: 02 — Persistência e concorrência-base
 - Status da sprint: Em andamento
 
 ## Trabalho atual
 
-- Backlog item: BL-002 — Configuração e ambientes
-- Tarefa: BL-002/T01 — Preparar configuração base por ambiente
-- Status: Em validação
-- Responsável técnico: Revisão ChatGPT
+- Backlog item: BL-003 — Persistência EF Core + SQLite
+- Tarefa: BL-003/T01 — Preparar dependências e base de persistência
+- Status: Pronta para implementação
+- Responsável técnico: Codex
 
 ## Último estado aprovado
 
-- Último commit aprovado: ddd0454
-- Mensagem: chore(solution): initialize project structure
+- Último commit aprovado: 78542fe9
+- Mensagem: chore(config): prepare runtime environments
 - Branch: main
 - Working tree: Clean
 - Última verificação: 2026-08-14
 
 ## Concluído nesta sprint
 
-- BL-001 — Estrutura inicial da solução
+Nenhuma tarefa ainda.
 
 ## Bloqueios
 
@@ -32,11 +32,11 @@ Nenhum.
 
 ## Próximo passo
 
-Verificar no GitHub a entrega de BL-002/T01.
+Executar o prompt de BL-003/T01 para preparar a base de persistência EF Core + SQLite.
 
 ## Observações imediatas
 
-- Não implementar autenticação nesta primeira tarefa.
-- Não criar entidades de negócio.
-- Não criar UI funcional.
-- Não antecipar itens posteriores do backlog.
+- Sprint 01 concluída com BL-001 e BL-002 aprovados.
+- BL-003 deve ser dividido em tarefas pequenas.
+- Não implementar concorrência Version nesta primeira tarefa; isso pertence ao BL-004.
+- Não criar entidades de negócio ainda sem necessidade da tarefa.
