@@ -9,22 +9,22 @@
 
 ## Trabalho atual
 
-- Backlog item: BL-001 — Estrutura inicial da solução
-- Tarefa: BL-001/T01 — Criar solution e projetos iniciais
+- Backlog item: BL-002 — Configuração e ambientes
+- Tarefa: BL-002/T01 — Preparar configuração base por ambiente
 - Status: Em validação
 - Responsável técnico: Revisão ChatGPT
 
 ## Último estado aprovado
 
-- Último commit aprovado: 3b9b4d5
-- Mensagem: docs: fix current state heading example
+- Último commit aprovado: ddd0454
+- Mensagem: chore(solution): initialize project structure
 - Branch: main
 - Working tree: Clean
 - Última verificação: 2026-08-14
 
 ## Concluído nesta sprint
 
-Nenhuma tarefa ainda.
+- BL-001 — Estrutura inicial da solução
 
 ## Bloqueios
 
@@ -32,7 +32,7 @@ Nenhum.
 
 ## Próximo passo
 
-Verificar no GitHub a entrega de BL-001/T01.
+Verificar no GitHub a entrega de BL-002/T01.
 
 ## Observações imediatas
 

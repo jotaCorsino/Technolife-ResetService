@@ -119,7 +119,12 @@ Roadmap
 → Verificação
 ```
 
-Os comandos oficiais de execução, build e teste serão definidos quando a solution existir.
+A solution pode ser restaurada e compilada com os comandos já validados:
+
+```text
+dotnet restore ResetService.slnx
+dotnet build ResetService.slnx -c Release
+```
 
 ## Escopo da v1.0
 
