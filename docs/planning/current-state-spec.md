@@ -112,7 +112,7 @@ Não será um arquivo histórico acumulativo.
 Estrutura recomendada:
 
 ```markdown
-## Reset Service — Current State
+# Reset Service — Current State
 
 ## Estado geral
 - Versão alvo:
@@ -673,7 +673,7 @@ O Current State deverá refletir sempre a branch real.
 Quando começarmos a implementação, um Current State inicial poderá assumir a forma:
 
 ```markdown
-## Reset Service — Current State
+# Reset Service — Current State
 
 ## Estado geral
 
