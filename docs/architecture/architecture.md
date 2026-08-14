@@ -42,7 +42,7 @@ A aplicação não dependerá de internet para seu funcionamento normal.
 
 ## 3. Topologia
 
-```text id="cv2f4n"
+```text
                     REDE LOCAL TECHNOLIFE
 
  ┌─────────────────┐
@@ -88,7 +88,7 @@ O acesso ocorrerá através de navegador moderno.
 
 Exemplo:
 
-```text id="n03mcn"
+```text
 https://resetservice/
 ```
 
@@ -96,7 +96,7 @@ ou outro nome interno definido na implantação.
 
 O objetivo é permitir:
 
-```text id="hjccgv"
+```text
 qualquer computador autorizado da LAN
                ↓
             navegador
@@ -116,13 +116,13 @@ Deverá ser configurado um nome interno estável.
 
 Preferência:
 
-```text id="abzcmf"
+```text
 https://resetservice/
 ```
 
 ou, conforme infraestrutura de nomes adotada:
 
-```text id="1zz02j"
+```text
 https://resetservice.technolife.local/
 ```
 
@@ -177,7 +177,7 @@ Não serão utilizados microsserviços na versão 1.0.
 
 Teremos:
 
-```text id="5sbziu"
+```text
 uma aplicação
 um processo principal
 uma implantação
@@ -192,7 +192,7 @@ mas com responsabilidades internas separadas.
 
 Estrutura proposta:
 
-```text id="tyap6a"
+```text
 src/
 ├── ResetService.Web/
 ├── ResetService.Core/
@@ -235,7 +235,7 @@ Representará o núcleo das regras do produto.
 
 Poderá conter módulos conceituais como:
 
-```text id="pmp0yn"
+```text
 Services
 Templates
 Workflow
@@ -279,7 +279,7 @@ Não será construída uma SPA separada com React, Angular ou Vue.
 
 A interface utilizará:
 
-```text id="fzfw7p"
+```text
 Razor Pages
 +
 HTML
@@ -323,7 +323,7 @@ Ações frequentes poderão usar chamadas assíncronas.
 
 Exemplo:
 
-```text id="v3os2z"
+```text
 Usuário marca passo
       ↓
 Fetch HTTP
@@ -347,13 +347,13 @@ Será requisito oficial que dois ou mais usuários possam abrir e trabalhar no m
 
 Não haverá bloqueio exclusivo do tipo:
 
-```text id="lbai2f"
+```text
 Serviço bloqueado porque João está utilizando.
 ```
 
 O objetivo será permitir:
 
-```text id="5cs1ri"
+```text
 João
 → executa uma ação
 
@@ -373,7 +373,7 @@ Será utilizado ASP.NET Core SignalR.
 
 Exemplos de alterações:
 
-```text id="9efn0r"
+```text
 Passo concluído
 Passo marcado Não aplicável
 Observação adicionada
@@ -391,7 +391,7 @@ As conexões poderão ser agrupadas por contexto.
 
 Exemplo conceitual:
 
-```text id="32nquh"
+```text
 service:142
 ```
 
@@ -409,7 +409,7 @@ Não armazenará o estado oficial.
 
 A regra será:
 
-```text id="x0ee5h"
+```text
 Banco
 = fonte de verdade
 
@@ -425,7 +425,7 @@ Se existir qualquer dúvida sobre o estado, o frontend poderá solicitar novamen
 
 A aplicação poderá trabalhar com eventos conceituais como:
 
-```text id="rv1mci"
+```text
 StepStateChanged
 ObservationAdded
 ResponsibleChanged
@@ -446,13 +446,13 @@ Operações persistentes que alteram o estado da aplicação deverão passar por
 
 A primeira implementação utilizará:
 
-```text id="7yg601"
+```text
 System.Threading.Channels
 ```
 
 Não serão necessários na versão 1.0:
 
-```text id="t80ox4"
+```text
 RabbitMQ
 Redis
 Kafka
@@ -465,7 +465,7 @@ service bus externo
 
 O fluxo conceitual será:
 
-```text id="5kp44g"
+```text
 Usuário
    ↓
 Requisição
@@ -497,7 +497,7 @@ Uma operação não deverá ser apresentada como salva antes da persistência re
 
 Fluxo obrigatório:
 
-```text id="rp1866"
+```text
 Usuário executa ação
         ↓
 Comando é processado
@@ -519,7 +519,7 @@ A fila inicial será interna ao processo.
 
 Isso é suficiente porque a arquitetura prevê:
 
-```text id="gwy1r4"
+```text
 uma única instância ativa
 do Reset Service
 ```
@@ -559,7 +559,7 @@ Entidades mutáveis relevantes possuirão um token de versão gerenciado pela ap
 
 Exemplo conceitual:
 
-```text id="cu0oic"
+```text
 Service
 
 Id
@@ -569,7 +569,7 @@ Version
 
 Fluxo:
 
-```text id="jk6oxf"
+```text
 Carlos carrega Version 15
 
 João altera
@@ -592,7 +592,7 @@ Quando houver conflito real, a operação será rejeitada e a interface receber�
 
 Exemplo:
 
-```text id="ujmx6t"
+```text
 Este serviço foi alterado por outro usuário.
 
 Os dados foram atualizados.
@@ -605,7 +605,7 @@ Revise a informação antes de tentar novamente.
 
 A combinação será:
 
-```text id="r7ac5i"
+```text
 Command Queue
      ↓
 ordena alterações
@@ -629,7 +629,7 @@ Operações críticas deverão, quando adequado, possuir identificação de oper
 
 Exemplo conceitual:
 
-```text id="y9ehs2"
+```text
 OperationId
 ```
 
@@ -649,7 +649,7 @@ Especialmente:
 
 A versão 1.0 utilizará:
 
-```text id="lmd2o2"
+```text
 SQLite
 +
 Entity Framework Core
@@ -663,7 +663,7 @@ O arquivo ativo do banco permanecerá no armazenamento local do servidor.
 
 Não será permitido utilizar o arquivo SQLite operacional diretamente em:
 
-```text id="5zidqe"
+```text
 \\servidor\pasta\resetservice.db
 ```
 
@@ -677,7 +677,7 @@ Estações nunca acessam diretamente o arquivo.
 
 O SQLite será configurado para operar em:
 
-```text id="f0afhd"
+```text
 WAL
 ```
 
@@ -698,7 +698,7 @@ A escala prevista é:
 
 A combinação:
 
-```text id="rhh2xa"
+```text
 SQLite
 +
 transações curtas
@@ -733,7 +733,7 @@ Não será adicionada abstração excessiva apenas para suportar teoricamente v�
 
 O formato continuará:
 
-```text id="u3dru0"
+```text
 RS-AAAA-NNNNN
 ```
 
@@ -743,7 +743,7 @@ Deverá existir proteção no banco contra duplicação.
 
 Exemplo conceitual:
 
-```text id="dnljiq"
+```text
 ServiceNumberSequence
 
 Year
@@ -758,7 +758,7 @@ A publicação de revisões também será transacional.
 
 A combinação:
 
-```text id="ghfign"
+```text
 ModelId
 RevisionNumber
 ```
@@ -781,7 +781,7 @@ A interface apresentará horário adequado ao contexto da Technolife.
 
 Será utilizado:
 
-```text id="oekfid"
+```text
 ASP.NET Core Identity
 ```
 
@@ -810,7 +810,7 @@ ASP.NET Core Identity será utilizado para mecanismos como:
 
 Os perfis funcionais continuam sendo somente:
 
-```text id="l6nbyu"
+```text
 Administrador
 Técnico
 ```
@@ -835,7 +835,7 @@ Regras de segurança definidas em `security-requirements.md` deverão ser implem
 
 A implementação inicialmente utilizará:
 
-```text id="7axcri"
+```text
 PDFsharp
 +
 MigraDoc
@@ -853,7 +853,7 @@ Cada conclusão deverá possuir fotografia histórica imutável.
 
 Estrutura conceitual:
 
-```text id="mgkftu"
+```text
 ServiceConclusion
 │
 ├── ConclusionNumber
@@ -876,7 +876,7 @@ O snapshot poderá ser persistido como documento JSON versionado associado à co
 
 Exemplo conceitual:
 
-```text id="4abp00"
+```text
 ServiceConclusion
 
 Id
@@ -896,7 +896,7 @@ Esse conteúdo será imutável depois da conclusão correspondente.
 
 Fluxo:
 
-```text id="at9fng"
+```text
 Serviço
    ↓
 Conclusão
@@ -920,7 +920,7 @@ Será utilizado mecanismo consistente de backup do SQLite.
 
 Depois, o pacote poderá incluir:
 
-```text id="b5xnk5"
+```text
 snapshot do banco
 +
 manifesto
@@ -940,7 +940,7 @@ Não será requisito inicial utilizar IIS.
 
 Topologia:
 
-```text id="3p0ssa"
+```text
 Browser
    ↓
 HTTPS
@@ -958,19 +958,19 @@ A aplicação será instalada como Serviço do Windows.
 
 Nome conceitual:
 
-```text id="2q4vdr"
+```text
 Technolife Reset Service
 ```
 
 Inicialização:
 
-```text id="hh5m87"
+```text
 Automatic
 ```
 
 Após reinicialização normal da máquina:
 
-```text id="5d50t6"
+```text
 Windows inicia
       ↓
 Reset Service inicia
@@ -984,7 +984,7 @@ endereço volta a responder na LAN
 
 A aplicação será publicada inicialmente para:
 
-```text id="s58w7y"
+```text
 win-x64
 ```
 
@@ -998,7 +998,7 @@ O ambiente de produção não deverá depender obrigatoriamente de instalação 
 
 Estrutura conceitual:
 
-```text id="3hl0av"
+```text
 C:\Program Files\Technolife\ResetService\
 └── aplicação
 
@@ -1028,7 +1028,7 @@ Atualizações deverão possuir processo explícito.
 
 Conceitualmente:
 
-```text id="nrqtkp"
+```text
 Nova versão
      ↓
 Backup recomendado
@@ -1070,7 +1070,7 @@ Todos pertencem ao mesmo backend.
 
 O conjunto base deverá permanecer pequeno:
 
-```text id="p7wvxx"
+```text
 .NET
 ASP.NET Core
 EF Core
@@ -1088,7 +1088,7 @@ Dependências adicionais deverão possuir justificativa concreta.
 
 A versão 1.0 não utilizará sem necessidade comprovada:
 
-```text id="z3zv9h"
+```text
 Docker
 Kubernetes
 Redis
@@ -1131,7 +1131,7 @@ serviços externos obrigatórios
 
 A arquitetura-base aprovada para o Reset Service v1.0 será:
 
-```text id="7muv3j"
+```text
                     LAN / HTTPS
                          │
             ┌────────────▼────────────┐

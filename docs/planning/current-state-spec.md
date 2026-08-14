@@ -15,13 +15,13 @@ Este documento define como o estado atual do desenvolvimento do Reset Service se
 
 O arquivo operacional correspondente será:
 
-```text id="cs01"
+```text
 docs/planning/current-state.md
 ```
 
 Ele deverá responder rapidamente:
 
-```text id="cs02"
+```text
 Onde estamos?
 O que está sendo feito?
 Qual foi o último estado aprovado?
@@ -52,7 +52,7 @@ Nesse momento já existirão:
 
 Os documentos possuem responsabilidades diferentes.
 
-```text id="cs03"
+```text
 product/*
 architecture/*
 → definem produto e arquitetura
@@ -78,7 +78,7 @@ O Current State não deverá duplicar os demais documentos.
 
 Durante a implementação:
 
-```text id="cs04"
+```text
 GitHub
 → fonte de verdade do código e commits
 
@@ -111,7 +111,7 @@ Não será um arquivo histórico acumulativo.
 
 Estrutura recomendada:
 
-```markdown id="cs05"
+```markdown
 ## Reset Service — Current State
 
 ## Estado geral
@@ -152,7 +152,7 @@ Estrutura recomendada:
 
 Exemplo:
 
-```text id="cs06"
+```text
 Versão alvo:
 v1.0
 
@@ -168,7 +168,7 @@ Em andamento
 
 Estados permitidos para sprint:
 
-```text id="cs07"
+```text
 Não iniciada
 Em andamento
 Em validação
@@ -186,7 +186,7 @@ A execução deverá manter uma tarefa principal ativa por vez.
 
 Exemplo:
 
-```text id="cs08"
+```text
 Backlog:
 BL-025 — Sequência RS-AAAA-NNNNN
 
@@ -207,7 +207,7 @@ As subtarefas serão identificadas dentro do backlog item.
 
 Formato:
 
-```text id="cs09"
+```text
 BL-025/T01
 BL-025/T02
 BL-025/T03
@@ -215,7 +215,7 @@ BL-025/T03
 
 Exemplo:
 
-```text id="cs10"
+```text
 BL-025/T01 — Criar ServiceNumberSequence
 BL-025/T02 — Mapear persistência
 BL-025/T03 — Implementar geração transacional
@@ -230,7 +230,7 @@ Não será necessário criar uma segunda numeração global para tarefas técnic
 
 O Current State poderá apresentar:
 
-```text id="cs11"
+```text
 BL-025 — Em andamento
 
 Concluído:
@@ -252,7 +252,7 @@ Isso fornece granularidade sem transformar `backlog.md` em um rastreador de tare
 
 Estados simples poderão ser utilizados:
 
-```text id="cs12"
+```text
 Pronta para implementação
 Em implementação
 Em validação
@@ -270,13 +270,13 @@ O campo identifica quem possui a ação imediata.
 
 Exemplos:
 
-```text id="cs13"
+```text
 Responsável técnico: Codex
 ```
 
 ou:
 
-```text id="cs14"
+```text
 Responsável técnico: Revisão ChatGPT
 ```
 
@@ -290,7 +290,7 @@ O Current State deverá registrar o último commit considerado validado.
 
 Exemplo:
 
-```text id="cs15"
+```text
 Último commit aprovado:
 a41c38f
 
@@ -307,7 +307,7 @@ main
 
 Um commit será considerado aprovado somente após:
 
-```text id="cs16"
+```text
 Codex implementa
       ↓
 testes executados
@@ -331,7 +331,7 @@ Para leitura rápida, o Current State poderá registrar hash curto.
 
 Exemplo:
 
-```text id="cs17"
+```text
 a41c38f
 ```
 
@@ -345,7 +345,7 @@ A branch ativa deverá sempre ser explicitada.
 
 Exemplo:
 
-```text id="cs18"
+```text
 Branch:
 main
 ```
@@ -358,21 +358,21 @@ Caso branches curtas sejam adotadas futuramente, o Current State deverá refleti
 
 Estados recomendados:
 
-```text id="cs19"
+```text
 Working tree:
 Clean
 ```
 
 ou:
 
-```text id="cs20"
+```text
 Working tree:
 Dirty — alterações da tarefa atual
 ```
 
 Entre tarefas aprovadas, o estado esperado será:
 
-```text id="cs21"
+```text
 Clean
 ```
 
@@ -384,7 +384,7 @@ Registrar a data em que o estado foi efetivamente confirmado.
 
 Exemplo:
 
-```text id="cs22"
+```text
 Última verificação:
 2026-08-14
 ```
@@ -399,7 +399,7 @@ A seção deverá mostrar somente o necessário para entender o progresso corren
 
 Exemplo:
 
-```text id="cs23"
+```text
 ## Concluído nesta sprint
 
 - BL-025/T01 — entidade de sequência
@@ -416,7 +416,7 @@ Quando uma sprint terminar, informações detalhadas já registradas no Git pode
 
 Exemplo:
 
-```text id="cs24"
+```text
 Sprint 02 concluída.
 Próxima: Sprint 03 — Pipeline de comandos e infraestrutura.
 ```
@@ -429,7 +429,7 @@ O novo trabalho passa a ocupar o foco do documento.
 
 Quando não houver bloqueio:
 
-```text id="cs25"
+```text
 ## Bloqueios
 
 Nenhum.
@@ -437,7 +437,7 @@ Nenhum.
 
 Quando houver:
 
-```text id="cs26"
+```text
 ## Bloqueios
 
 - Teste de implantação no Windows 10 ainda indisponível.
@@ -446,7 +446,7 @@ Quando houver:
 
 Cada bloqueio deverá indicar:
 
-```text id="cs27"
+```text
 problema
 +
 impacto
@@ -462,7 +462,7 @@ Somente será um bloqueio se impedir o próximo trabalho necessário.
 
 Caso contrário, poderá aparecer em:
 
-```text id="cs28"
+```text
 Observações imediatas
 ```
 
@@ -476,7 +476,7 @@ O Current State deverá possuir exatamente um próximo passo principal e concret
 
 Bom:
 
-```text id="cs29"
+```text
 Criar e executar o prompt do BL-025/T03
 para implementar a geração transacional
 do número de serviço.
@@ -484,13 +484,13 @@ do número de serviço.
 
 Evitar:
 
-```text id="cs30"
+```text
 Continuar desenvolvimento.
 ```
 
 ou:
 
-```text id="cs31"
+```text
 Implementar o restante.
 ```
 
@@ -502,7 +502,7 @@ A seção será destinada somente a informações úteis para a execução próx
 
 Exemplo:
 
-```text id="cs32"
+```text
 - BL-025/T04 deverá testar pelo menos
   10 criações concorrentes.
 
@@ -535,7 +535,7 @@ Não incluir:
 
 Não utilizar formato de diário:
 
-```text id="cs33"
+```text
 08/14 — fizemos X
 08/15 — corrigimos Y
 08/16 — mudamos Z
@@ -573,13 +573,13 @@ Codex poderá atualizar o Current State quando a tarefa explicitamente pedir iss
 
 Entretanto, Codex não deverá declarar unilateralmente:
 
-```text id="cs34"
+```text
 Sprint concluída
 ```
 
 ou:
 
-```text id="cs35"
+```text
 Implementação aprovada
 ```
 
@@ -591,21 +591,21 @@ antes da etapa de verificação prevista no fluxo.
 
 Enquanto Codex trabalha:
 
-```text id="cs36"
+```text
 Status:
 Em implementação
 ```
 
 Após entregar relatório:
 
-```text id="cs37"
+```text
 Status:
 Em validação
 ```
 
 Depois de aprovado:
 
-```text id="cs38"
+```text
 Tarefa anterior:
 Concluída
 
@@ -631,7 +631,7 @@ Na execução inicial da v1.0, não será obrigatório criar GitHub Issue para c
 
 A estrutura inicial será:
 
-```text id="cs39"
+```text
 backlog.md
 +
 sprint-plan.md
@@ -656,7 +656,7 @@ Issues poderão ser usadas futuramente quando trouxerem valor concreto, especial
 
 A direção inicial permanece simples:
 
-```text id="cs40"
+```text
 main
 ```
 
@@ -672,7 +672,7 @@ O Current State deverá refletir sempre a branch real.
 
 Quando começarmos a implementação, um Current State inicial poderá assumir a forma:
 
-```markdown id="cs41"
+```markdown
 ## Reset Service — Current State
 
 ## Estado geral
@@ -733,7 +733,7 @@ O documento somente será útil se representar o estado real.
 
 Portanto:
 
-```text id="cs42"
+```text
 Current State correto
 >
 Current State detalhado
@@ -745,7 +745,7 @@ Informação obsoleta deverá ser corrigida ou removida.
 
 ## 36. Fluxo operacional resumido
 
-```text id="cs43"
+```text
 Selecionar tarefa
       ↓
 Atualizar Current State

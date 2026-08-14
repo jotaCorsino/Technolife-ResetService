@@ -683,13 +683,7 @@ Verificar:
 
 ## 38. IDs dos writing blocks
 
-Atributos utilizados durante a conversa, como:
-
-```text
-id="..."
-```
-
-não fazem parte do conteúdo Markdown dos documentos finais.
+Atributos utilizados durante a conversa, como `id="..."`, não fazem parte do conteúdo Markdown dos documentos finais.
 
 Se tiverem sido copiados para os arquivos, deverão ser removidos.
 

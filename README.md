@@ -1,74 +1,132 @@
 # Reset Service
 
-Reset Service é o sistema interno da Technolife para registrar, acompanhar e documentar serviços técnicos de reset e configuração de equipamentos.
+Aplicação web interna da Technolife para criação, execução, acompanhamento e documentação de procedimentos técnicos estruturados.
 
-O produto v1.0 será uma aplicação web local, hospedada centralmente em uma máquina hospedeira Windows compatível e acessada pelos computadores da rede interna via navegador. A documentação deste repositório define o escopo aprovado antes do início da implementação.
+Roteiro. Foco. Progresso.
 
-## Estado do Projeto
+## Estado Atual
 
-Este repositório está em fase documental pré-implementação.
+- Planejamento da v1.0: concluído.
+- Implementação: ainda não iniciada.
+- Próxima etapa: Sprint 01 — Estrutura da solução.
 
-O planejamento da v1.0 está consolidado em `docs/`. O arquivo operacional futuro `docs/planning/current-state.md` deverá ser criado somente quando a implementação começar.
+O arquivo operacional futuro `docs/planning/current-state.md` será criado somente quando a implementação começar.
 
-## Direção Técnica
+## Funcionamento Geral
 
-- ASP.NET Core com interface web.
-- SQLite como persistência inicial.
-- ASP.NET Core Identity para autenticação e autorização.
-- Roles oficiais: `Administrator` e `Technician`.
-- Operação local em LAN, sem dependência de internet para funções essenciais.
-- Estratégia multiusuário baseada em Command Queue, Optimistic Concurrency / Version e SignalR.
-- Backup manual disponível e backup automático disponível, opcional e controlado pelo Administrator.
+```text
+Modelo
+→ Revisão publicada
+→ Serviço
+→ Roteiro independente
+→ Execução
+→ Conclusão
+→ Documentos
+→ Histórico
+```
 
-## Hospedagem e Clientes
+## Arquitetura Resumida
 
-A aplicação poderá ser hospedada em uma máquina hospedeira Windows compatível, incluindo desktop, notebook ou Windows Server.
+```text
+Browsers
+→ HTTPS / LAN
+→ ASP.NET Core / Razor Pages
+→ Application / Domain
+→ EF Core
+→ SQLite
+```
+
+A estratégia multiusuário combina:
+
+- Command Queue: ordena gravações persistentes.
+- Optimistic Concurrency / Version: impede sobrescrita silenciosa baseada em estado obsoleto.
+- SignalR: propaga alterações confirmadas aos navegadores.
+
+## Stack Principal
+
+- C#
+- .NET 10
+- ASP.NET Core 10
+- Razor Pages
+- EF Core 10
+- SQLite
+- SignalR
+- ASP.NET Core Identity
+- System.Threading.Channels
+- PDFsharp / MigraDoc
+- xUnit
+- Playwright .NET quando aplicável
+
+## Implantação
+
+- Windows x64 compatível.
+- Máquina hospedeira em desktop, notebook ou Windows Server.
+- Execução como Windows Service.
+- Publicação self-contained.
+- Acesso pela LAN.
+- HTTPS.
+- Nenhuma instalação nas estações clientes.
+- Funcionamento normal sem dependência da internet.
 
 Windows Server não é obrigatório.
 
-Windows 10 faz parte da estratégia de compatibilidade e deverá ser validado conforme a versão do .NET adotada e os critérios internos do Reset Service. Clientes Windows antigos, como Windows 7, 8 e 8.1, serão tratados apenas como compatibilidade legada / melhor esforço.
+## Clientes
+
+Suporte principal planejado:
+
+- Windows 10.
+- Windows 11.
+- Chrome suportado.
+- Edge suportado.
+
+Ambientes Windows antigos serão tratados como compatibilidade legada / melhor esforço.
+
+## Estrutura do Repositório
+
+Neste momento, o repositório contém principalmente:
+
+```text
+README.md
+docs/
+```
+
+Os diretórios `src/` e `tests/` serão criados durante a Sprint 01.
 
 ## Documentação Principal
 
-### Produto
-
-- [Product Specification](docs/product/product-spec.md)
-- [Service Workflow Specification](docs/product/service-workflow-spec.md)
-- [Service Lifecycle Specification](docs/product/service-lifecycle-spec.md)
-- [Service Template Specification](docs/product/service-template-spec.md)
-- [Service Data Specification](docs/product/service-data-spec.md)
-- [Document Generation Specification](docs/product/document-generation-spec.md)
-- [User Access Specification](docs/product/user-access-spec.md)
-- [UX Navigation Specification](docs/product/ux-navigation-spec.md)
-- [Non-Functional Requirements](docs/product/non-functional-requirements.md)
-- [Backup and Recovery Specification](docs/product/backup-recovery-spec.md)
-- [Security Requirements](docs/product/security-requirements.md)
-- [Product Destination and Implementation Readiness](docs/product/product-destination.md)
-
-### Arquitetura
-
-- [Architecture](docs/architecture/architecture.md)
-- [Data Model](docs/architecture/data-model.md)
-- [Security Architecture](docs/architecture/security.md)
-- [Deployment and Operations](docs/architecture/deployment-operations.md)
-
-### Planejamento
-
-- [Development Roadmap](docs/planning/roadmap.md)
+- [Destino do produto](docs/product/product-destination.md)
+- [Arquitetura](docs/architecture/architecture.md)
+- [Modelo de dados](docs/architecture/data-model.md)
+- [Segurança](docs/architecture/security.md)
+- [Implantação e operações](docs/architecture/deployment-operations.md)
+- [Roadmap](docs/planning/roadmap.md)
 - [Backlog](docs/planning/backlog.md)
-- [Sprint Plan](docs/planning/sprint-plan.md)
-- [Current State Specification](docs/planning/current-state-spec.md)
-- [README and Documentation Consolidation](docs/planning/documentation-consolidation-spec.md)
+- [Plano de sprints](docs/planning/sprint-plan.md)
+- [Estratégia de testes](docs/development/testing-strategy.md)
+- [Guia de desenvolvimento](docs/development/development-guide.md)
 
-### Desenvolvimento
+## Desenvolvimento
 
-- [Testing Strategy and Quality Criteria](docs/development/testing-strategy.md)
-- [Development Guide](docs/development/development-guide.md)
+O fluxo de implementação planejado segue:
 
-## Limites da v1.0
+```text
+Roadmap
+→ Backlog
+→ Sprint
+→ Tarefa técnica
+→ Implementação
+→ Testes
+→ Verificação
+```
 
-A v1.0 não prevê aplicativo mobile nativo, execução distribuída em múltiplas instâncias do backend, dependência de serviços externos obrigatórios, automações externas de e-mail/WhatsApp ou suporte oficial a ambientes legados.
+Os comandos oficiais de execução, build e teste serão definidos quando a solution existir.
+
+## Escopo da v1.0
+
+A v1.0 cobre a operação interna essencial: modelos de procedimentos, serviços com roteiro independente, execução por etapas e passos, estados do serviço, histórico, documentos, usuários, segurança, operação multiusuário, backup, restauração, implantação local e atualização controlada.
+
+Ficam fora da v1.0: aplicativo mobile nativo, execução distribuída em múltiplas instâncias do backend, dependência de serviços externos obrigatórios, automações externas de e-mail/WhatsApp, integrações fiscais ou suporte oficial a ambientes legados.
 
 ## Próximo Passo
 
-Após aprovação desta consolidação documental no GitHub, a implementação deve começar pela Sprint 01 definida em [Sprint Plan](docs/planning/sprint-plan.md), com acompanhamento pelo futuro `docs/planning/current-state.md`.
+Após aprovação da consolidação documental no GitHub, a implementação deve começar pela Sprint 01 definida em [Plano de sprints](docs/planning/sprint-plan.md).
