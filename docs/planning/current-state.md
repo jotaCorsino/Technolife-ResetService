@@ -10,14 +10,14 @@
 ## Trabalho atual
 
 - Backlog item: BL-003 — Persistência EF Core + SQLite
-- Tarefa: BL-003/T01 — Preparar dependências e base de persistência
-- Status: Pronta para implementação
-- Responsável técnico: Codex
+- Tarefa: BL-003/T01 — Adicionar EF Core SQLite e DbContext base
+- Status: Em validação
+- Responsável técnico: Revisão ChatGPT
 
 ## Último estado aprovado
 
-- Último commit aprovado: 78542fe9
-- Mensagem: chore(config): prepare runtime environments
+- Último commit aprovado: d49910c
+- Mensagem: docs(planning): start sprint 02
 - Branch: main
 - Working tree: Clean
 - Última verificação: 2026-08-14
@@ -32,11 +32,11 @@ Nenhum.
 
 ## Próximo passo
 
-Executar o prompt de BL-003/T01 para preparar a base de persistência EF Core + SQLite.
+Verificar no GitHub a entrega de BL-003/T01.
 
 ## Observações imediatas
 
-- Sprint 01 concluída com BL-001 e BL-002 aprovados.
-- BL-003 deve ser dividido em tarefas pequenas.
-- Não implementar concorrência Version nesta primeira tarefa; isso pertence ao BL-004.
-- Não criar entidades de negócio ainda sem necessidade da tarefa.
+- DbContext ainda não está registrado na aplicação.
+- Connection string e acesso real ao SQLite pertencem à próxima subtarefa.
+- Migrations ainda não foram iniciadas.
+- BL-004 continua fora de escopo.
