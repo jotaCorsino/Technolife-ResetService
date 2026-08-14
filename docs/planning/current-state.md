@@ -10,14 +10,14 @@
 ## Trabalho atual
 
 - Backlog item: BL-003 — Persistência EF Core + SQLite
-- Tarefa: BL-003/T02 — Registrar persistência e validar acesso real ao SQLite
+- Tarefa: BL-003/T03 — Preparar migrations e validar criação controlada do banco
 - Status: Em validação
 - Responsável técnico: Revisão ChatGPT
 
 ## Último estado aprovado
 
-- Último commit aprovado: 111e460
-- Mensagem: fix(persistence): update sqlite native dependency
+- Último commit aprovado: a9b241e
+- Mensagem: feat(persistence): register sqlite database access
 - Branch: main
 - Working tree: Clean
 - Última verificação: 2026-08-14
@@ -25,6 +25,7 @@
 ## Concluído nesta sprint
 
 - BL-003/T01 — EF Core SQLite e DbContext base
+- BL-003/T02 — Registro de persistência e acesso real ao SQLite
 
 ## Bloqueios
 
@@ -32,12 +33,11 @@ Nenhum.
 
 ## Próximo passo
 
-Verificar no GitHub a entrega de BL-003/T02.
+Verificar no GitHub a entrega de BL-003/T03.
 
 ## Observações imediatas
 
-- Persistência já está registrada no DI.
-- SQLite real deve estar validado por teste temporário.
-- Migrations ainda pertencem à próxima subtarefa.
-- WAL ainda não foi configurado.
+- Migration baseline criada e validada de forma controlada.
+- Nenhuma migration é executada automaticamente no startup.
+- WAL ainda precisa ser tratado antes do encerramento de BL-003.
 - BL-004 permanece fora de escopo.
