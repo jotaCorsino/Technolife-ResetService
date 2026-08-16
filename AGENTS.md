@@ -8,30 +8,84 @@ O Reset Service NÃO é mais um sistema de execução de serviços técnicos pas
 
 O produto atual é uma aplicação web interna da Technolife para criação, organização, consulta, edição e preservação de documentação técnica usada em assistência técnica, redes, servidores, firewall, DNS, e-mail, hospedagem e service desk.
 
+O pivô alterou o domínio funcional, mas NÃO anulou automaticamente requisitos transversais já aprovados de rede, Windows, segurança, backup, desempenho, compatibilidade e UX.
+
 Antes de alterar código, leia nesta ordem:
 
 1. `docs/planning/current-state.md`
-2. `docs/product/product-destination.md`
-3. `docs/architecture/architecture.md`
-4. `docs/architecture/data-model.md`
-5. `docs/planning/backlog.md`
-6. `docs/planning/sprint-plan.md`
-7. `docs/development/development-guide.md`
-8. `docs/development/testing-strategy.md`
+2. `docs/planning/pivot-reconciliation.md`
+3. `docs/product/product-destination.md`
+4. `docs/architecture/architecture.md`
+5. `docs/architecture/data-model.md`
+6. `docs/planning/backlog.md`
+7. `docs/planning/sprint-plan.md`
+8. `docs/development/development-guide.md`
+9. `docs/development/testing-strategy.md`
 
-## Fonte de verdade
+## Regra de interpretação do legado
 
-O planejamento novo prevalece sobre documentos antigos que ainda mencionem:
+Não classifique toda a documentação antiga como descartada.
+
+Use três classes:
+
+```text
+LEGADO DE DOMÍNIO
+Service / Template / Stage / Step / execução
+→ não implementar
+
+REQUISITO TRANSVERSAL PRESERVADO
+LAN / Windows / segurança / backup / desempenho / UX
+→ continua restringindo o produto
+
+NOVO NÚCLEO DOCUMENTAL
+Document / Category / Tag / Version / busca / editor
+→ implementar conforme backlog vigente
+```
+
+`docs/planning/pivot-reconciliation.md` contém a classificação detalhada.
+
+## Requisitos transversais que não podem ser esquecidos
+
+Preservar, salvo decisão posterior explícita:
+
+- aplicação web centralizada;
+- nenhuma instalação nas estações clientes;
+- funcionamento normal sem internet;
+- acesso pela LAN;
+- host podendo ser desktop, notebook ou Windows Server;
+- Windows 10/11 x64 como alvos de validação do host conforme runtime;
+- Chrome/Edge modernos como navegadores principais;
+- Windows antigos como clientes em melhor esforço quando o browser permitir;
+- endereço interno estável, preferencialmente por DNS/hostname;
+- HTTPS oficial na LAN quando implantado;
+- Windows Service e inicialização sem login interativo como direção de deploy;
+- separação entre binários substituíveis e dados persistentes;
+- atualização centralizada e possível offline;
+- aproximadamente 1–20 usuários cadastrados e 1–10 simultâneos como escala de referência;
+- UX rápida na LAN;
+- nenhum overwrite silencioso em edição concorrente;
+- feedback claro de falha de comunicação/salvamento;
+- autenticação local e contas individuais quando a sprint correspondente começar;
+- backend como autoridade de identidade/permissão;
+- backup e restauração como requisitos essenciais;
+- possibilidade de cópia de backup fora do disco primário;
+- logs técnicos para diagnóstico;
+- desktop/notebook e 1366×768 como base mínima de UX;
+- alta qualidade de UI/UX apesar da simplicidade técnica.
+
+## Fonte de verdade do domínio atual
+
+Não implementar como parte do produto atual apenas por aparecer em documentos antigos:
 
 - `Service` como entidade principal;
 - `ServiceTemplate` / `TemplateRevision`;
 - execução por `Stage` / `Step`;
-- progresso de serviço;
+- estados/progresso do antigo Service;
+- snapshots/conclusões do antigo Service;
+- PDFs operacionais como requisito do MVP;
 - SignalR como requisito central;
 - Command Queue / `System.Threading.Channels`;
-- geração de PDF como requisito do MVP.
-
-Não implemente essas funcionalidades apenas porque aparecem em documentação legada.
+- serialização global de gravações.
 
 ## Arquitetura aprovada
 
@@ -43,8 +97,7 @@ Preservar como padrão:
 - HTML, CSS e JavaScript;
 - EF Core;
 - SQLite local na máquina hospedeira;
-- aplicação web centralizada acessada pela LAN;
-- autenticação local quando a sprint correspondente for iniciada.
+- aplicação web centralizada acessada pela LAN.
 
 A direção é um monólito simples e fácil de manter.
 
@@ -123,9 +176,12 @@ A interface deve priorizar:
 - estados vazios úteis;
 - erros compreensíveis;
 - feedback de salvamento;
+- proteção de conteúdo não confirmado quando possível;
 - ações destrutivas recuperáveis quando possível;
 - boa hierarquia visual;
-- desktop/notebook como ambiente principal.
+- desktop/notebook como ambiente principal;
+- uso confortável a partir de aproximadamente 1366×768;
+- comportamento coerente em Chrome e Edge.
 
 Evite aparência de ERP administrativo complexo.
 
