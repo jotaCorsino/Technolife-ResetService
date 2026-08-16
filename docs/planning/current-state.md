@@ -9,15 +9,15 @@
 
 ## Trabalho atual
 
-- Backlog item: Não aplicável — realinhamento de planejamento
-- Tarefa: PLANNING-024 — Realinhar operação para execução sob demanda
-- Status: Em validação
-- Responsável técnico: Revisão ChatGPT
+- Backlog item: BL-006 — Infraestrutura transversal
+- Tarefa: BL-006/T01 — Estruturar logging técnico base
+- Status: Pronta para implementação
+- Responsável técnico: Codex
 
 ## Último estado aprovado
 
-- Último commit aprovado: 351f2de
-- Mensagem: feat(commands): host command queue lifecycle
+- Último commit aprovado: 85c8e02
+- Mensagem: docs(architecture): align on-demand application operation
 - Branch: main
 - Working tree: Clean
 - Última verificação: 2026-08-16
@@ -25,6 +25,7 @@
 ## Concluído nesta sprint
 
 - BL-005 — Command Queue
+- PLANNING-024 — Realinhamento operacional para execução sob demanda
 
 ## Bloqueios
 
@@ -32,12 +33,12 @@ Nenhum.
 
 ## Próximo passo
 
-Verificar no GitHub o realinhamento operacional e, se aprovado, retomar BL-006.
+Executar BL-006/T01 — Estruturar logging técnico base.
 
 ## Observações imediatas
 
-- BL-005 está concluído.
-- O modelo oficial é a execução sob demanda de `ResetService.exe` na máquina hospedeira.
-- Serviço do Windows e inicialização automática não são mais requisitos.
-- `BackgroundService` e `IHostedService` continuam válidos como componentes internos durante a execução.
-- BL-006 permanece fora de escopo.
+- Modelo operacional sob demanda aprovado.
+- `BackgroundService` interno continua válido durante a execução do processo.
+- BL-006 será dividido em subtarefas pequenas e verificáveis.
+- T01 tratará somente da base de logging.
+- Tratamento global de erros, health check e SignalR serão tarefas posteriores do BL-006.
