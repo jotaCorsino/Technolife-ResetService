@@ -131,6 +131,8 @@ Os demais computadores acessarão pela rede local usando Chrome ou Edge, por um 
 https://resetservice/
 ```
 
+O funcionamento normal não deverá depender de internet. Compatibilidade com clientes Windows antigos poderá existir em regime de melhor esforço quando houver navegador compatível.
+
 ## Estado atual
 
 O projeto passou por um pivô de produto em agosto de 2026.
@@ -139,16 +141,20 @@ A concepção anterior, orientada à criação e execução de serviços técnic
 
 A fundação já criada — ASP.NET Core, Razor Pages, EF Core e SQLite — será reaproveitada.
 
-O trabalho atual está concentrado em consolidar o novo escopo e iniciar o núcleo documental.
+O pivô altera o domínio funcional, mas preserva requisitos transversais relevantes de implantação, Windows, LAN, segurança, backup, desempenho, compatibilidade, multiusuário e UX. A classificação oficial está em `docs/planning/pivot-reconciliation.md`.
+
+O trabalho atual está concentrado em consolidar esse novo escopo antes de iniciar o núcleo documental.
 
 ## Documentação principal
 
+- [Estado atual](docs/planning/current-state.md)
+- [Reconciliação do pivô](docs/planning/pivot-reconciliation.md)
 - [Destino do produto](docs/product/product-destination.md)
 - [Arquitetura](docs/architecture/architecture.md)
 - [Modelo de dados](docs/architecture/data-model.md)
-- [Estado atual](docs/planning/current-state.md)
 - [Roadmap](docs/planning/roadmap.md)
 - [Backlog](docs/planning/backlog.md)
 - [Plano de sprints](docs/planning/sprint-plan.md)
+- [Guia para agentes/Codex](AGENTS.md)
 
-> Especificações antigas centradas em `Service`, `ServiceTemplate`, execução de roteiro, Command Queue e SignalR são consideradas legado de planejamento e não devem orientar nova implementação enquanto não forem removidas ou arquivadas.
+> Especificações antigas centradas em `Service`, `ServiceTemplate`, execução de roteiro, Command Queue e SignalR são legado de domínio e não devem orientar nova implementação. Requisitos transversais antigos não devem ser descartados sem consultar a reconciliação do pivô.
