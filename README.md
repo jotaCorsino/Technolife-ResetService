@@ -1,137 +1,154 @@
 # Reset Service
 
-Aplicação web interna da Technolife para criação, execução, acompanhamento e documentação de procedimentos técnicos estruturados.
+Aplicação web interna da Technolife para criação, organização, consulta e manutenção de documentação técnica usada no trabalho diário da equipe.
 
-Roteiro. Foco. Progresso.
+A ferramenta funciona como uma base de conhecimento operacional para assistência técnica, redes, servidores, firewall, DNS, e-mail, hospedagem e service desk.
 
-## Estado Atual
+## Objetivo
 
-- Planejamento da v1.0: concluído.
-- Implementação: ainda não iniciada.
-- Próxima etapa: Sprint 01 — Estrutura da solução.
+Reduzir o tempo necessário para encontrar e executar corretamente tarefas técnicas recorrentes.
 
-O arquivo operacional futuro `docs/planning/current-state.md` será criado somente quando a implementação começar.
+Exemplos de conteúdo:
 
-## Funcionamento Geral
+- formatação e preparação padrão de computadores;
+- troubleshooting de estações e redes;
+- configuração de firewalls, VPN, DNS e e-mail;
+- procedimentos de servidores e compartilhamentos;
+- migração de hospedagem;
+- checklists de implantação e manutenção;
+- referências e comandos técnicos.
+
+## Princípios do produto
+
+- simples antes de complexo;
+- rápido para encontrar, ler e editar;
+- boa UI e UX como parte do produto, não acabamento posterior;
+- proteção contra perda de documentação;
+- manutenção e atualização simples;
+- funcionamento local, sem dependência obrigatória de internet;
+- nenhuma instalação nas estações clientes.
+
+## Experiência principal
 
 ```text
-Modelo
-→ Revisão publicada
-→ Serviço
-→ Roteiro independente
-→ Execução
-→ Conclusão
-→ Documentos
-→ Histórico
+Abrir navegador
+      ↓
+Acessar o endereço interno
+      ↓
+Pesquisar ou navegar
+      ↓
+Abrir documentação
+      ↓
+Executar tarefa técnica
 ```
 
-## Arquitetura Resumida
+Para registrar conhecimento:
 
 ```text
-Browsers
-→ HTTPS / LAN
-→ ASP.NET Core / Razor Pages
-→ Application / Domain
-→ EF Core
-→ SQLite
+Nova documentação
+      ↓
+Escolher tipo / categoria
+      ↓
+Escrever ou adaptar conteúdo
+      ↓
+Salvar
+      ↓
+Conhecimento disponível para a equipe
 ```
 
-A estratégia multiusuário combina:
+## Tipos de documentação
 
-- Command Queue: ordena gravações persistentes.
-- Optimistic Concurrency / Version: impede sobrescrita silenciosa baseada em estado obsoleto.
-- SignalR: propaga alterações confirmadas aos navegadores.
+A primeira versão deverá suportar:
 
-## Stack Principal
+- Procedimento;
+- Troubleshooting;
+- Configuração;
+- Checklist;
+- Referência;
+- Documento livre.
 
-- C#
-- .NET 10
-- ASP.NET Core 10
-- Razor Pages
-- EF Core 10
-- SQLite
-- SignalR
-- ASP.NET Core Identity
-- System.Threading.Channels
-- PDFsharp / MigraDoc
-- xUnit
-- Playwright .NET quando aplicável
+## Organização
+
+Os documentos serão organizados por:
+
+- categorias e subcategorias;
+- tags;
+- tipo;
+- pesquisa textual.
+
+Recursos de produtividade previstos incluem favoritos, recentes, duplicação e templates.
+
+## Proteção da informação
+
+A aplicação deverá possuir, de forma progressiva:
+
+- salvamento seguro;
+- histórico de versões;
+- restauração de versões;
+- lixeira;
+- backup;
+- controle de concorrência otimista para evitar sobrescrita silenciosa.
+
+Ações destrutivas devem ser reversíveis sempre que possível.
+
+## Arquitetura resumida
+
+```text
+Browsers na LAN
+      ↓
+ASP.NET Core / Razor Pages
+      ↓
+EF Core
+      ↓
+SQLite local
+```
+
+A versão atual não utilizará como requisitos centrais:
+
+- Command Queue;
+- SignalR para sincronização global;
+- microsserviços;
+- frontend SPA separado;
+- infraestrutura distribuída.
+
+## Stack principal
+
+- C# / .NET 10;
+- ASP.NET Core / Razor Pages;
+- HTML, CSS e JavaScript;
+- Entity Framework Core;
+- SQLite;
+- autenticação local;
+- execução centralizada em Windows.
 
 ## Implantação
 
-- Windows x64 compatível.
-- Máquina hospedeira em desktop, notebook ou Windows Server.
-- Execução como Windows Service.
-- Publicação self-contained.
-- Acesso pela LAN.
-- HTTPS.
-- Nenhuma instalação nas estações clientes.
-- Funcionamento normal sem dependência da internet.
+O sistema será instalado em uma única máquina Windows da empresa, que poderá ser desktop, notebook ou Windows Server.
 
-Windows Server não é obrigatório.
-
-## Clientes
-
-Suporte principal planejado:
-
-- Windows 10.
-- Windows 11.
-- Chrome suportado.
-- Edge suportado.
-
-Ambientes Windows antigos serão tratados como compatibilidade legada / melhor esforço.
-
-## Estrutura do Repositório
-
-Neste momento, o repositório contém principalmente:
+Os demais computadores acessarão pela rede local usando Chrome ou Edge, por um endereço interno estável, por exemplo:
 
 ```text
-README.md
-docs/
+https://resetservice/
 ```
 
-Os diretórios `src/` e `tests/` serão criados durante a Sprint 01.
+## Estado atual
 
-## Documentação Principal
+O projeto passou por um pivô de produto em agosto de 2026.
+
+A concepção anterior, orientada à criação e execução de serviços técnicos passo a passo, foi descontinuada antes da implementação do domínio.
+
+A fundação já criada — ASP.NET Core, Razor Pages, EF Core e SQLite — será reaproveitada.
+
+O trabalho atual está concentrado em consolidar o novo escopo e iniciar o núcleo documental.
+
+## Documentação principal
 
 - [Destino do produto](docs/product/product-destination.md)
 - [Arquitetura](docs/architecture/architecture.md)
 - [Modelo de dados](docs/architecture/data-model.md)
-- [Segurança](docs/architecture/security.md)
-- [Implantação e operações](docs/architecture/deployment-operations.md)
+- [Estado atual](docs/planning/current-state.md)
 - [Roadmap](docs/planning/roadmap.md)
 - [Backlog](docs/planning/backlog.md)
 - [Plano de sprints](docs/planning/sprint-plan.md)
-- [Estratégia de testes](docs/development/testing-strategy.md)
-- [Guia de desenvolvimento](docs/development/development-guide.md)
 
-## Desenvolvimento
-
-O fluxo de implementação planejado segue:
-
-```text
-Roadmap
-→ Backlog
-→ Sprint
-→ Tarefa técnica
-→ Implementação
-→ Testes
-→ Verificação
-```
-
-A solution pode ser restaurada e compilada com os comandos já validados:
-
-```text
-dotnet restore ResetService.slnx
-dotnet build ResetService.slnx -c Release
-```
-
-## Escopo da v1.0
-
-A v1.0 cobre a operação interna essencial: modelos de procedimentos, serviços com roteiro independente, execução por etapas e passos, estados do serviço, histórico, documentos, usuários, segurança, operação multiusuário, backup, restauração, implantação local e atualização controlada.
-
-Ficam fora da v1.0: aplicativo mobile nativo, execução distribuída em múltiplas instâncias do backend, dependência de serviços externos obrigatórios, automações externas de e-mail/WhatsApp, integrações fiscais ou suporte oficial a ambientes legados.
-
-## Próximo Passo
-
-Após aprovação da consolidação documental no GitHub, a implementação deve começar pela Sprint 01 definida em [Plano de sprints](docs/planning/sprint-plan.md).
+> Especificações antigas centradas em `Service`, `ServiceTemplate`, execução de roteiro, Command Queue e SignalR são consideradas legado de planejamento e não devem orientar nova implementação enquanto não forem removidas ou arquivadas.
