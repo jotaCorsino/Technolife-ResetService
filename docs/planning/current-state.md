@@ -17,6 +17,30 @@ Objetivo:
 
 > criar, organizar, encontrar, ler, editar e preservar documentação técnica que agilize tarefas de assistência técnica, redes, servidores, firewall, DNS, e-mail, hospedagem e service desk.
 
+## Regra de reconciliação
+
+O pivô substitui o domínio funcional antigo, mas não elimina automaticamente requisitos transversais já aprovados.
+
+A classificação oficial está em:
+
+`docs/planning/pivot-reconciliation.md`
+
+Devem continuar sendo considerados, entre outros:
+
+- operação pela LAN sem dependência normal de internet;
+- instalação central e nenhuma instalação nas estações clientes;
+- Windows como host, inclusive desktop/notebook quando adequado;
+- Chrome/Edge como navegadores principais e compatibilidade legada em melhor esforço;
+- desempenho percebido rápido;
+- múltiplos usuários simultâneos;
+- nenhuma sobrescrita silenciosa em conflitos;
+- autenticação local e autoria individual;
+- backup/restauração;
+- logs e diagnóstico;
+- atualização centralizada/offline;
+- alta qualidade de UI/UX;
+- desktop/notebook e uso confortável a partir de aproximadamente 1366×768.
+
 ## Fundação técnica preservada
 
 - .NET 10;
@@ -61,16 +85,24 @@ Sprint 00 deve consolidar:
 - destino do produto;
 - arquitetura;
 - modelo de dados;
+- reconciliação dos requisitos preservados;
+- instruções para Codex (`AGENTS.md`);
+- guia de desenvolvimento;
+- estratégia de testes;
 - roadmap;
 - backlog;
 - plano de sprints.
 
 ## Próximo passo técnico
 
-Após a Sprint 00:
+Somente após a Sprint 00 estar reconciliada:
 
 ```text
-simplificar estrutura da solution
+sincronizar checkout local do Codex
+↓
+confirmar branch e working tree
+↓
+simplificar estrutura da solution apenas se continuar vantajoso
 ↓
 criar entidades Document, Category, Tag e DocumentVersion
 ↓
@@ -85,4 +117,6 @@ implementar listagem / criação / leitura / edição de documentos
 
 Não implementar funcionalidade do produto antigo apenas porque já estava documentada.
 
-Toda nova peça deve justificar sua existência pelo novo objetivo documental.
+Também não descartar requisito transversal apenas porque nasceu durante o planejamento antigo.
+
+Toda nova peça deve justificar sua existência pelo objetivo documental e respeitar a reconciliação aprovada.
