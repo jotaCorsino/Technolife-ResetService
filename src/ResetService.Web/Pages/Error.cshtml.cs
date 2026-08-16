@@ -12,7 +12,17 @@ public class ErrorModel : PageModel
 
     public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
-    public void OnGet()
+    public void OnGet() => SetRequestId();
+
+    public void OnPost() => SetRequestId();
+
+    public void OnPut() => SetRequestId();
+
+    public void OnPatch() => SetRequestId();
+
+    public void OnDelete() => SetRequestId();
+
+    private void SetRequestId()
     {
         RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
     }
