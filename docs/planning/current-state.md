@@ -2,42 +2,87 @@
 
 ## Estado geral
 
-- Versão alvo: v1.0
-- Fase: 1 — Fundação da solução
-- Sprint: 02 — Persistência e concorrência-base
+- Versão alvo: v1.0 Documentation Edition
+- Fase: 0 — Pivô de produto e simplificação
+- Sprint: 00 — Pivot
 - Status da sprint: Em andamento
+
+## Decisão de produto
+
+Em agosto de 2026, o escopo anterior orientado a criação e execução de serviços técnicos passo a passo foi encerrado antes da implementação do domínio.
+
+O produto passa a ser uma base interna de conhecimento técnico para a Technolife.
+
+Objetivo:
+
+> criar, organizar, encontrar, ler, editar e preservar documentação técnica que agilize tarefas de assistência técnica, redes, servidores, firewall, DNS, e-mail, hospedagem e service desk.
+
+## Fundação técnica preservada
+
+- .NET 10;
+- ASP.NET Core;
+- Razor Pages;
+- EF Core;
+- SQLite;
+- acesso pela LAN;
+- hospedagem centralizada em Windows.
+
+## Complexidade removida do núcleo
+
+- fluxo operacional de Service;
+- ServiceTemplate / TemplateRevision;
+- execução por Stage / Step;
+- SignalR como requisito central;
+- Command Queue / System.Threading.Channels;
+- sincronização contínua de navegadores;
+- geração de PDF como requisito do MVP.
+
+## Código existente
+
+A implementação está em estágio inicial.
+
+Já existe:
+
+- solution .NET;
+- projeto Web Razor Pages;
+- projeto Core praticamente vazio;
+- projeto Infrastructure com persistência-base;
+- DbContext base;
+- configuração EF Core + SQLite;
+- migration baseline vazia.
+
+Não existem tabelas do domínio antigo no banco.
 
 ## Trabalho atual
 
-- Backlog item: BL-003 — Persistência EF Core + SQLite
-- Tarefa: BL-003/T03 — Preparar migrations e validar criação controlada do banco
-- Status: Em validação
-- Responsável técnico: Revisão ChatGPT
+Sprint 00 deve consolidar:
 
-## Último estado aprovado
+- README;
+- destino do produto;
+- arquitetura;
+- modelo de dados;
+- roadmap;
+- backlog;
+- plano de sprints.
 
-- Último commit aprovado: a9b241e
-- Mensagem: feat(persistence): register sqlite database access
-- Branch: main
-- Working tree: Clean
-- Última verificação: 2026-08-14
+## Próximo passo técnico
 
-## Concluído nesta sprint
+Após a Sprint 00:
 
-- BL-003/T01 — EF Core SQLite e DbContext base
-- BL-003/T02 — Registro de persistência e acesso real ao SQLite
+```text
+simplificar estrutura da solution
+↓
+criar entidades Document, Category, Tag e DocumentVersion
+↓
+configurar DbContext
+↓
+criar primeira migration real
+↓
+implementar listagem / criação / leitura / edição de documentos
+```
 
-## Bloqueios
+## Regra de implementação
 
-Nenhum.
+Não implementar funcionalidade do produto antigo apenas porque já estava documentada.
 
-## Próximo passo
-
-Verificar no GitHub a entrega de BL-003/T03.
-
-## Observações imediatas
-
-- Migration baseline criada e validada de forma controlada.
-- Nenhuma migration é executada automaticamente no startup.
-- WAL ainda precisa ser tratado antes do encerramento de BL-003.
-- BL-004 permanece fora de escopo.
+Toda nova peça deve justificar sua existência pelo novo objetivo documental.
