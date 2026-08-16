@@ -11,13 +11,13 @@
 
 - Backlog item: BL-006 — Infraestrutura transversal
 - Tarefa: BL-006/T01 — Estruturar logging técnico base
-- Status: Pronta para implementação
-- Responsável técnico: Codex
+- Status: Em validação
+- Responsável técnico: Revisão ChatGPT
 
 ## Último estado aprovado
 
-- Último commit aprovado: 85c8e02
-- Mensagem: docs(architecture): align on-demand application operation
+- Último commit aprovado: b40d325
+- Mensagem: docs(planning): prepare bl-006
 - Branch: main
 - Working tree: Clean
 - Última verificação: 2026-08-16
@@ -33,12 +33,12 @@ Nenhum.
 
 ## Próximo passo
 
-Executar BL-006/T01 — Estruturar logging técnico base.
+Verificar no GitHub a entrega de BL-006/T01.
 
 ## Observações imediatas
 
-- Modelo operacional sob demanda aprovado.
-- `BackgroundService` interno continua válido durante a execução do processo.
-- BL-006 será dividido em subtarefas pequenas e verificáveis.
-- T01 tratará somente da base de logging.
-- Tratamento global de erros, health check e SignalR serão tarefas posteriores do BL-006.
+- Logging técnico persistente base implementado.
+- Production direciona arquivos para ProgramData.
+- Rotação, retenção e limite de tamanho configurados.
+- A aplicação continua usando `ILogger<T>`.
+- Tratamento global de erros, health check e SignalR permanecem para subtarefas posteriores.
