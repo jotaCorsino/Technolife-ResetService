@@ -7,10 +7,10 @@ Roteiro. Foco. Progresso.
 ## Estado Atual
 
 - Planejamento da v1.0: concluído.
-- Implementação: ainda não iniciada.
-- Próxima etapa: Sprint 01 — Estrutura da solução.
+- Implementação: em andamento.
+- Sprint atual: Sprint 03 — Pipeline de comandos e infraestrutura.
 
-O arquivo operacional futuro `docs/planning/current-state.md` será criado somente quando a implementação começar.
+O acompanhamento operacional está em [Current State](docs/planning/current-state.md).
 
 ## Funcionamento Geral
 
@@ -61,14 +61,20 @@ A estratégia multiusuário combina:
 
 - Windows x64 compatível.
 - Máquina hospedeira em desktop, notebook ou Windows Server.
-- Execução como Windows Service.
 - Publicação self-contained.
+- Execução sob demanda por `ResetService.exe` na máquina hospedeira.
+- Abertura automática do navegador padrão no host após a inicialização.
 - Acesso pela LAN.
 - HTTPS.
 - Nenhuma instalação nas estações clientes.
+- Somente uma instância ativa na máquina hospedeira.
+- Encerramento planejado com bloqueio de novos comandos e drenagem da fila.
+- Processo completamente encerrado quando a aplicação for fechada.
 - Funcionamento normal sem dependência da internet.
 
 Windows Server não é obrigatório.
+
+Os clientes usam o navegador ou um atalho para a URL e dependem de a aplicação já estar aberta no host. Executar o binário por compartilhamento de rede a partir de uma estação cliente não é um modo suportado de uso.
 
 ## Clientes
 
@@ -83,14 +89,15 @@ Ambientes Windows antigos serão tratados como compatibilidade legada / melhor e
 
 ## Estrutura do Repositório
 
-Neste momento, o repositório contém principalmente:
+O repositório contém a documentação, a solution e os projetos iniciais de produção e testes:
 
 ```text
 README.md
 docs/
+src/
+tests/
+ResetService.slnx
 ```
-
-Os diretórios `src/` e `tests/` serão criados durante a Sprint 01.
 
 ## Documentação Principal
 
@@ -134,4 +141,4 @@ Ficam fora da v1.0: aplicativo mobile nativo, execução distribuída em múltip
 
 ## Próximo Passo
 
-Após aprovação da consolidação documental no GitHub, a implementação deve começar pela Sprint 01 definida em [Plano de sprints](docs/planning/sprint-plan.md).
+O próximo passo operacional é mantido em [Current State](docs/planning/current-state.md).

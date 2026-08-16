@@ -464,19 +464,20 @@ Não será exigida infraestrutura de alta disponibilidade.
 Interrupções poderão ocorrer durante:
 
 - desligamento do servidor;
+- aplicação fechada na máquina hospedeira;
 - manutenção;
 - indisponibilidade da LAN;
 - atualização controlada.
 
-O objetivo será recuperação simples e previsível.
+Enquanto `ResetService.exe` não estiver em execução, não haverá processo residente, consumo contínuo de CPU/RAM ou URL disponível. O objetivo será abertura, operação e encerramento simples e previsível.
 
 ---
 
 ## 32. Inicialização do ambiente
 
-Após uma reinicialização normal do computador ou servidor responsável, o sistema deverá poder retornar ao funcionamento com mínima intervenção manual.
+Após uma reinicialização normal do computador ou servidor responsável, o sistema permanecerá parado até que um operador execute `ResetService.exe` na máquina hospedeira.
 
-A arquitetura deverá favorecer inicialização automática dos componentes necessários quando apropriado.
+Essa ação iniciará no mesmo processo o Kestrel, o SQLite e os componentes hospedados internos e abrirá o navegador padrão. Não haverá requisito de inicialização automática com o Windows.
 
 ---
 
@@ -565,6 +566,8 @@ O Administrador poderá manter o backup automático desativado.
 O Reset Service deverá continuar funcionando normalmente com backup automático desativado.
 
 A periodicidade e retenção serão definidas em especificação própria.
+
+Se o horário configurado ocorrer enquanto a aplicação estiver fechada, a próxima inicialização poderá executar no máximo um backup automático pendente. Não serão gerados backups retroativos para cada dia perdido.
 
 ---
 
@@ -824,16 +827,17 @@ A regra será:
 20. Atualizações deverão preservar dados históricos.
 21. Backup é obrigatório.
 22. Backup automático será suportado.
-23. Backups devem poder ser armazenados fora do disco principal.
-24. Restauração deverá possuir procedimento documentado e testável.
-25. Logs técnicos deverão existir.
-26. Histórico funcional e log técnico serão conceitos diferentes.
-27. Erros técnicos não deverão ser expostos diretamente aos usuários.
-28. A aplicação continuará exigindo segurança adequada em rede interna.
-29. Datas e horários deverão permanecer consistentes.
-30. Acessibilidade básica deverá ser respeitada.
-31. Dependências obrigatórias de runtime deverão funcionar offline.
-32. A arquitetura deverá evitar overengineering e permanecer proporcional à operação da Technolife.
+23. Um horário de backup perdido enquanto a aplicação estiver fechada poderá gerar no máximo uma execução pendente na próxima inicialização.
+24. Backups devem poder ser armazenados fora do disco principal.
+25. Restauração deverá possuir procedimento documentado e testável.
+26. Logs técnicos deverão existir.
+27. Histórico funcional e log técnico serão conceitos diferentes.
+28. Erros técnicos não deverão ser expostos diretamente aos usuários.
+29. A aplicação continuará exigindo segurança adequada em rede interna.
+30. Datas e horários deverão permanecer consistentes.
+31. Acessibilidade básica deverá ser respeitada.
+32. Dependências obrigatórias de runtime deverão funcionar offline.
+33. A arquitetura deverá evitar overengineering e permanecer proporcional à operação da Technolife.
 
 ---
 

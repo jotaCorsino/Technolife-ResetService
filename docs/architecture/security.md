@@ -26,7 +26,7 @@ Abrange:
 - SignalR;
 - HTTPS;
 - Data Protection;
-- identidade do Serviço do Windows;
+- identidade interativa do processo no Windows;
 - permissões de filesystem;
 - SQLite;
 - uploads;
@@ -625,7 +625,7 @@ O certificado utilizado deverá ser confiável pelos computadores da Technolife.
 
 Não será utilizado certificado de desenvolvimento em produção.
 
-A instalação deverá evitar avisos comuns de navegador como certificado não confiável.
+A preparação do host deverá evitar avisos comuns de navegador como certificado não confiável.
 
 ---
 
@@ -671,7 +671,7 @@ C:\ProgramData\Technolife\ResetService\keys\
 
 ## 45. DPAPI
 
-No Windows, o key ring persistido será protegido em repouso utilizando DPAPI quando adequado à identidade definida para o serviço.
+No Windows, o key ring persistido deverá ser protegido em repouso utilizando DPAPI em escopo da máquina quando adequado, por exemplo com `ProtectKeysWithDpapi(protectToLocalMachine: true)`.
 
 ---
 
@@ -690,7 +690,7 @@ Não será usado para criptografar arbitrariamente:
 
 ## 47. Recuperação e Data Protection
 
-Após uma restauração completa em outro servidor, a instalação poderá utilizar novo key ring.
+Após uma restauração completa em outro servidor, o novo ambiente poderá utilizar novo key ring.
 
 Consequência aceitável:
 
@@ -703,17 +703,11 @@ Esse comportamento está alinhado ao requisito de encerrar sessões após restau
 
 ---
 
-## 48. Serviço do Windows
+## 48. Identidade do processo no Windows
 
-O Reset Service deverá utilizar uma identidade de serviço dedicada.
+O Reset Service será executado sob demanda pela conta interativa que abrir `ResetService.exe` na máquina hospedeira.
 
-Proposta:
-
-```text
-NT SERVICE\TechnolifeResetService
-```
-
-através de conta virtual de serviço do Windows.
+Não haverá requisito de conta virtual `NT SERVICE`, serviço registrado ou identidade residente. A conta operacional deverá possuir somente as permissões necessárias nos diretórios persistentes e nos recursos explicitamente configurados.
 
 ---
 
@@ -733,12 +727,12 @@ A aplicação não precisa dos privilégios amplos dessa conta.
 
 ## 50. Princípio de menor privilégio no Windows
 
-A identidade do serviço receberá apenas os acessos necessários.
+A identidade interativa que executar a aplicação receberá apenas os acessos necessários.
 
 Exemplo:
 
 ```text
-Program Files\Technolife\ResetService
+pasta local escolhida para ResetService
 → leitura / execução
 
 ProgramData\Technolife\ResetService\data
@@ -756,6 +750,8 @@ ProgramData\Technolife\ResetService\data
 ...\backups
 → leitura / escrita quando utilizado
 ```
+
+O uso diário não exigirá `LocalSystem`, identidade `NT SERVICE` nem privilégios administrativos contínuos. ACLs restritivas protegerão SQLite, chaves, logs, assets, backups e configurações em `ProgramData`.
 
 ---
 
@@ -811,7 +807,7 @@ Estações acessam somente o backend.
 A versão 1.0 utilizará principalmente:
 
 - ACLs do Windows;
-- identidade dedicada do serviço;
+- conta interativa de menor privilégio;
 - segurança do host.
 
 Criptografia proprietária de todo o SQLite não será requisito.
@@ -1193,7 +1189,7 @@ tentar salvar
 | Sliding expiration | Sim |
 | Security Stamp validation | 1 minuto |
 | HTTPS | Obrigatório em produção |
-| Identity do Windows Service | Conta virtual dedicada |
+| Identidade de execução no Windows | Conta interativa com menor privilégio |
 | Logo | PNG/JPEG |
 | Limite inicial de logo | 5 MB |
 | CORS global | Não |
@@ -1233,7 +1229,7 @@ tentar salvar
 28. Certificado deverá ser confiável pelos clientes.
 29. Data Protection terá key ring persistido.
 30. Chaves serão protegidas no Windows.
-31. Serviço do Windows utilizará identidade dedicada e de baixo privilégio.
+31. O processo sob demanda utilizará conta interativa com somente os acessos necessários aos dados persistentes.
 32. Banco, chaves e backups ficarão fora de diretórios públicos.
 33. SQLite não será disponibilizado diretamente aos navegadores.
 34. Uploads serão validados por conteúdo, tipo e tamanho.
@@ -1251,4 +1247,4 @@ tentar salvar
 
 **PLANNING-014 — Arquitetura Técnica de Segurança: CONCLUÍDA E APROVADA.**
 
-Este documento passa a orientar configuração do ASP.NET Core, Identity, Kestrel, SignalR, filesystem, serviço do Windows, deployment, testes de segurança e revisão de código.
+Este documento passa a orientar configuração do ASP.NET Core, Identity, Kestrel, SignalR, filesystem, execução sob demanda no Windows, deployment, testes de segurança e revisão de código.

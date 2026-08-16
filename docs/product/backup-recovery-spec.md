@@ -146,6 +146,10 @@ Quando Ativado, o Administrador poderá configurar pelo menos:
 
 A frequência padrão da versão 1.0 será diária.
 
+Como os componentes hospedados existem somente enquanto `ResetService.exe` estiver em execução, o agendamento não acordará nem iniciará remotamente a aplicação.
+
+Se o horário ocorrer enquanto a aplicação estiver fechada, a próxima inicialização poderá executar **no máximo um backup automático pendente**, desde que a função continue habilitada e o destino esteja disponível. O sistema não criará uma execução retroativa para cada dia perdido.
+
 ---
 
 ## 9. Horário
@@ -744,32 +748,34 @@ Essas estratégias poderão coexistir.
 5. Backup manual permanecerá disponível sob demanda.
 6. Quando ativado, o backup automático será diário.
 7. O horário será configurável.
-8. A retenção inicial proposta será de 30 backups automáticos.
-9. Backups manuais não serão removidos pela retenção automática.
-10. Backups pré-atualização e pré-restauração serão tratados separadamente.
-11. O destino poderá ser configurável.
-12. O sistema permitirá uso mesmo que o backup esteja no mesmo armazenamento principal.
-13. Backups deverão representar estado consistente.
-14. Backups deverão possuir metadados.
-15. Backups deverão passar por validação básica.
-16. Falhas não poderão ser apresentadas como sucesso.
-17. Alertas de backup serão relevantes somente quando a função automática estiver ativada.
-18. Atualizações recomendarão backup, mas poderão prosseguir sem ele mediante decisão administrativa.
-19. Somente Administradores poderão restaurar.
-20. A restauração será integral.
-21. Não haverá recuperação granular na versão 1.0.
-22. Não haverá merge entre backup e estado atual.
-23. O impacto temporal da restauração deverá ser explicado.
-24. O backup deverá ser validado antes da restauração.
-25. Sempre que possível será criado ou oferecido backup pré-restauração.
-26. A restauração poderá utilizar modo de manutenção.
-27. Sessões deverão ser encerradas após a restauração.
-28. Backups deverão permitir recuperação em outra instalação compatível.
-29. A versão de origem do backup deverá ser identificável.
-30. Importação não realizará restauração automaticamente.
-31. Backups poderão ser exportados quando aplicável.
-32. Backups deverão ser tratados como dados sensíveis.
-33. A capacidade de backup não substitui outras estratégias de proteção da infraestrutura.
+8. Se o horário ocorrer com a aplicação fechada, a próxima inicialização poderá executar no máximo um backup automático pendente.
+9. Não haverá uma execução retroativa para cada dia perdido.
+10. A retenção inicial proposta será de 30 backups automáticos.
+11. Backups manuais não serão removidos pela retenção automática.
+12. Backups pré-atualização e pré-restauração serão tratados separadamente.
+13. O destino poderá ser configurável.
+14. O sistema permitirá uso mesmo que o backup esteja no mesmo armazenamento principal.
+15. Backups deverão representar estado consistente.
+16. Backups deverão possuir metadados.
+17. Backups deverão passar por validação básica.
+18. Falhas não poderão ser apresentadas como sucesso.
+19. Alertas de backup serão relevantes somente quando a função automática estiver ativada.
+20. Atualizações recomendarão backup, mas poderão prosseguir sem ele mediante decisão administrativa.
+21. Somente Administradores poderão restaurar.
+22. A restauração será integral.
+23. Não haverá recuperação granular na versão 1.0.
+24. Não haverá merge entre backup e estado atual.
+25. O impacto temporal da restauração deverá ser explicado.
+26. O backup deverá ser validado antes da restauração.
+27. Sempre que possível será criado ou oferecido backup pré-restauração.
+28. A restauração poderá utilizar modo de manutenção.
+29. Sessões deverão ser encerradas após a restauração.
+30. Backups deverão permitir recuperação em outra instalação compatível.
+31. A versão de origem do backup deverá ser identificável.
+32. Importação não realizará restauração automaticamente.
+33. Backups poderão ser exportados quando aplicável.
+34. Backups deverão ser tratados como dados sensíveis.
+35. A capacidade de backup não substitui outras estratégias de proteção da infraestrutura.
 
 ---
 

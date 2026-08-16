@@ -81,7 +81,7 @@ Não haverá necessidade de instalar software do Reset Service nas estações cl
 
 ## 4. Hospedagem centralizada
 
-O Reset Service será instalado em uma única máquina hospedeira Windows compatível.
+O Reset Service será distribuído e executado em uma única máquina hospedeira Windows compatível.
 
 A máquina poderá ser:
 
@@ -94,16 +94,14 @@ Windows Server não será obrigatório.
 A máquina hospedeira executará:
 
 ```text
-Reset Service
+ResetService.exe sob demanda
 +
 ASP.NET Core
 +
 SQLite
-+
-Windows Service
 ```
 
-Os demais computadores acessarão pela rede local.
+Ao abrir o executável, o host iniciará o processo, o Kestrel, o SQLite e os componentes hospedados internos e abrirá o navegador padrão. Os demais computadores acessarão pela rede local enquanto esse processo estiver ativo.
 
 ---
 
@@ -583,21 +581,25 @@ A v1.0 incluirá, conforme as especificações aprovadas:
 
 ---
 
-## 28. Instalação
+## 28. Distribuição
 
 A experiência operacional desejada será:
 
 ```text
-Instalar uma vez
+Copiar ou extrair a publicação self-contained
       ↓
-Configurar
+Preparar dados persistentes, rede e HTTPS no host
       ↓
-Windows Service
+Executar ResetService.exe quando necessário
+      ↓
+abrir navegador padrão no host
       ↓
 https://resetservice/
 ```
 
 Nenhuma instalação do Reset Service será necessária nas estações clientes.
+
+Um instalador tradicional não é requisito. Uma ferramenta opcional de preparação poderá existir futuramente para tarefas administrativas como certificado, firewall e ACLs, sem registrar Serviço do Windows.
 
 ---
 
@@ -625,7 +627,7 @@ Em caso de perda da máquina hospedeira:
 ```text
 nova máquina Windows compatível
         ↓
-instalar Reset Service
+copiar publicação self-contained
         ↓
 configurar rede e HTTPS
         ↓

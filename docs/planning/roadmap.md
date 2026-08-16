@@ -466,7 +466,7 @@ O produto pode ser protegido e recuperado sem administração manual do banco.
 
 ---
 
-## 14. Fase 12 — Instalação, atualização e preparação da v1.0
+## 14. Fase 12 — Distribuição, atualização e preparação da v1.0
 
 ## Objetivo
 
@@ -476,16 +476,18 @@ Transformar o software desenvolvido em produto distribuível e operável.
 
 - publicação `win-x64`;
 - self-contained;
-- processo de instalação;
-- Windows Service;
-- identidade de serviço;
+- distribuição por pasta local;
+- preparação única da máquina hospedeira;
+- execução sob demanda por `ResetService.exe`;
+- abertura do navegador padrão no host;
+- bloqueio de segunda instância no mesmo host;
+- encerramento planejado com drenagem da fila;
+- término completo do processo;
 - ACLs;
 - firewall;
 - HTTPS;
 - certificado;
 - hostname/DNS;
-- startup automático;
-- recuperação do serviço;
 - suporte a desktop/notebook hospedeiro;
 - updater;
 - modo de manutenção;
@@ -494,7 +496,7 @@ Transformar o software desenvolvido em produto distribuível e operável.
 - migration bundle;
 - health check;
 - rollback de binários;
-- desinstalação segura;
+- remoção segura dos binários;
 - recuperação completa;
 - Windows 10;
 - Windows 11;
@@ -509,13 +511,17 @@ Transformar o software desenvolvido em produto distribuível e operável.
 ## Resultado esperado
 
 ```text
-Instalar
+Distribuir
 ↓
 configurar
+↓
+executar sob demanda
 ↓
 acessar pela LAN
 ↓
 operar
+↓
+encerrar completamente
 ↓
 atualizar
 ↓
@@ -651,7 +657,7 @@ produto completo
 +
 backup
 +
-instalação
+distribuição
 +
 atualização
 +

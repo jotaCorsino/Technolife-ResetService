@@ -57,7 +57,7 @@ O README deverá apresentar o Reset Service como:
 Também deverá deixar claro que a solução utiliza:
 
 ```text
-Instalação central
+Execução central sob demanda
 +
 LAN
 +
@@ -193,8 +193,7 @@ Implantação prevista:
 
 ```text
 Windows x64
-Windows Service
-self-contained
+self-contained executado sob demanda no host
 LAN
 HTTPS
 ```

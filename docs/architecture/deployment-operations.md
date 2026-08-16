@@ -2,7 +2,7 @@
 
 **Projeto:** Reset Service  
 **Empresa:** Technolife  
-**Documento:** Implantação, Instalação, Atualização e Operação  
+**Documento:** Implantação, Distribuição, Atualização e Operação
 **Versão:** 1.0  
 **Status:** Aprovado  
 **Referências:** `docs/product/*`, `docs/architecture/architecture.md`, `docs/architecture/data-model.md`, `docs/architecture/security.md`
@@ -13,13 +13,13 @@
 
 Este documento define como o Reset Service deverá ser:
 
-- instalado;
+- distribuído;
 - hospedado;
 - disponibilizado na rede;
 - iniciado;
 - atualizado;
 - diagnosticado;
-- desinstalado;
+- removido;
 - recuperado.
 
 A implantação deverá permanecer simples e compatível com a realidade operacional da Technolife.
@@ -28,7 +28,7 @@ A implantação deverá permanecer simples e compatível com a realidade operaci
 
 ## 2. Princípio central
 
-O Reset Service será instalado uma única vez em uma máquina central da rede.
+O Reset Service será distribuído para uma única máquina central da rede e executado nela sob demanda.
 
 Os usuários não instalarão o programa em suas estações.
 
@@ -126,7 +126,7 @@ A documentação do Reset Service deverá distinguir:
 
 A máquina hospedeira não precisa necessariamente ser dedicada exclusivamente ao Reset Service.
 
-Entretanto, deverá possuir recursos suficientes e permanecer operacional durante o período em que o sistema precisar estar disponível.
+Entretanto, deverá possuir recursos suficientes e permanecer operacional durante o período em que o sistema estiver aberto e precisar estar disponível.
 
 ---
 
@@ -147,7 +147,7 @@ Hibernação automática
 
 Fechar tampa
 → não deverá suspender a máquina
-  quando isso interromper o serviço
+  quando isso interromper a aplicação
 ```
 
 O guia de implantação deverá explicar essa necessidade.
@@ -177,8 +177,7 @@ Os computadores dos usuários não executarão:
 - .NET;
 - EF Core;
 - SQLite;
-- serviço do Windows;
-- aplicação instalada do Reset Service.
+- cópia executável do Reset Service.
 
 Eles executarão apenas o navegador.
 
@@ -427,49 +426,35 @@ Certificados de desenvolvimento do .NET não serão utilizados como certificado 
 
 ---
 
-## 25. Experiência de instalação
+## 25. Preparação da máquina hospedeira
 
-A instalação deverá ser guiada.
+A preparação inicial ocorrerá uma vez por máquina hospedeira e será distinta da operação diária.
 
 Conceitualmente:
 
 ```text
-Executar instalador
+Copiar ou extrair publicação self-contained
       ↓
-Verificar ambiente
+Escolher pasta local da aplicação
       ↓
-Instalar aplicação
-      ↓
-Criar diretórios
+Criar diretórios persistentes
       ↓
 Configurar permissões
       ↓
-Configurar HTTPS
+Configurar HTTPS, nome de rede e firewall
       ↓
-Criar firewall
-      ↓
-Criar Windows Service
-      ↓
-Inicializar banco
-      ↓
-Iniciar aplicação
-      ↓
-Verificar funcionamento
+Inicializar e verificar o ambiente
 ```
+
+Depois dessa preparação, abrir e fechar o produto não repetirá tarefas administrativas.
 
 ---
 
-## 26. Tecnologia do instalador
+## 26. Forma de distribuição e preparação
 
-O mecanismo físico do instalador não está definido nesta etapa.
+Um instalador tradicional não será requisito da versão 1.0. Copiar ou extrair a pasta self-contained será uma forma válida de distribuir a aplicação.
 
-Poderá futuramente ser:
-
-- `.exe`;
-- MSI;
-- outra tecnologia adequada para Windows.
-
-O requisito é a experiência e o comportamento, não o formato específico.
+Uma ferramenta opcional de preparação poderá ser criada futuramente se trouxer valor para configurar HTTPS, certificado, firewall, nome de rede ou ACLs. Ela não precisará ser MSI, registrar Serviço do Windows nem configurar inicialização automática.
 
 ---
 
@@ -492,7 +477,7 @@ O runtime necessário deverá acompanhar a aplicação quando apropriado.
 Aplicação:
 
 ```text
-C:\Program Files\Technolife\ResetService\
+C:\CaminhoEscolhido\ResetService\
 ```
 
 Dados:
@@ -526,7 +511,7 @@ C:\ProgramData\Technolife\ResetService\
 Regra:
 
 ```text
-Program Files
+pasta local escolhida
 → aplicação substituível
 
 ProgramData
@@ -535,76 +520,73 @@ ProgramData
 
 Atualizar os binários não poderá destruir os dados.
 
----
+A pasta local da aplicação poderá ser exposta por compartilhamento de rede para administração, cópia ou atualização dos binários. Isso não transforma o compartilhamento em local de execução para os clientes.
 
-## 31. Windows Service
-
-A aplicação executará como Serviço do Windows.
-
-Nome técnico:
-
-```text
-TechnolifeResetService
-```
-
-Nome exibido:
-
-```text
-Technolife Reset Service
-```
+O banco SQLite ativo e os demais dados operacionais permanecerão locais na máquina hospedeira, em `ProgramData`, e nunca serão abertos por caminho UNC.
 
 ---
 
-## 32. Inicialização automática
+## 31. Execução sob demanda
 
-Configuração preferencial:
+A aplicação executará como `ResetService.exe` self-contained, aberto sob demanda na máquina hospedeira.
+
+Fluxo diário:
 
 ```text
-Automatic (Delayed Start)
+operador executa ResetService.exe no host
+      ↓
+processo inicia Kestrel, SQLite e hosted workers
+      ↓
+navegador padrão abre no host
+      ↓
+clientes acessam a URL pela LAN
 ```
 
-Após a inicialização do Windows, o sistema deverá subir sem depender de login interativo.
+Executar o binário de um caminho UNC ou em uma estação cliente não será suportado, pois poderá criar outro processo servidor fora da máquina oficial.
 
 ---
 
-## 33. Usuário do Windows não precisa estar conectado
+## 32. Inicialização manual e disponibilidade
 
-Não será necessário:
+Após a inicialização do Windows, o Reset Service permanecerá parado até execução manual na máquina hospedeira.
 
-```text
-fazer login no Windows
-↓
-abrir ResetService.exe
-```
-
-O Serviço do Windows deverá executar independentemente de sessão de usuário.
+Um navegador, favorito ou atalho de URL em um cliente não iniciará a aplicação remotamente. `https://resetservice/` responderá somente enquanto o processo estiver em execução.
 
 ---
 
-## 34. Recuperação automática
+## 33. Sessão operacional do Windows
 
-O serviço poderá possuir política de recuperação.
+Um operador deverá entrar na máquina hospedeira e executar `ResetService.exe` quando o sistema precisar ser utilizado.
 
-Inicialmente:
+A conta interativa terá somente os acessos necessários à pasta da aplicação e aos diretórios persistentes. Não serão necessários privilégios administrativos contínuos durante o uso cotidiano.
+
+---
+
+## 34. Instância única e encerramento
+
+A distribuição deverá impedir que duas instâncias do Reset Service sejam executadas simultaneamente na mesma máquina hospedeira. O mecanismo técnico será escolhido na implementação desse requisito, sem antecipar uma solução específica.
+
+O encerramento planejado será realizado por mecanismo simples da aplicação, ainda a definir, e não por finalização abrupta do processo.
 
 ```text
-Primeira falha
-→ reiniciar após aproximadamente 30 segundos
-
-Segunda falha
-→ reiniciar após aproximadamente 60 segundos
-
-Falhas persistentes
-→ evitar loop infinito
+solicitar encerramento
+      ↓
+parar de aceitar novos comandos
+      ↓
+drenar comandos aceitos
+      ↓
+encerrar o host
+      ↓
+processo termina completamente
 ```
 
-Falhas permanentes deverão permanecer diagnosticáveis.
+Quando fechada, a aplicação não manterá processo residente nem consumo contínuo de CPU/RAM, e a URL ficará indisponível. Em caso de falha inesperada, o diagnóstico permanecerá disponível nos logs para que um operador possa reabrir a aplicação.
 
 ---
 
 ## 35. Firewall
 
-A instalação deverá criar somente a regra de rede necessária.
+A preparação do host deverá criar somente a regra de rede necessária.
 
 Conceitualmente:
 
@@ -755,15 +737,15 @@ Bloquear novos comandos
       ↓
 Drenar fila
       ↓
-Parar serviço
+Encerrar a aplicação
       ↓
 Preservar binários anteriores
       ↓
 Executar migration
       ↓
-Instalar aplicação
+Substituir aplicação
       ↓
-Iniciar serviço
+Executar nova versão
       ↓
 Health check
 ```
@@ -888,7 +870,7 @@ Recuperação será explícita e controlada.
 Depois de atualização, deverão ser verificadas pelo menos:
 
 ```text
-Windows Service
+Processo da aplicação
 Aplicação HTTP
 SQLite
 Schema esperado
@@ -914,15 +896,17 @@ Fluxo esperado:
 ```text
 Windows inicia
       ↓
-Serviço inicia automaticamente
+Reset Service permanece parado
       ↓
-SQLite abre
+operador executa ResetService.exe quando necessário
       ↓
-Kestrel inicia
+SQLite, Kestrel e hosted workers iniciam
       ↓
 https://resetservice/
 disponível
 ```
+
+Após outro reboot, o sistema continuará parado até nova execução manual.
 
 ---
 
@@ -946,7 +930,7 @@ Não deverão consumir armazenamento indefinidamente.
 
 ## 56. Windows Event Log
 
-Eventos importantes de serviço/startup poderão também ser enviados ao Windows Event Log.
+Eventos importantes de inicialização, encerramento e falha do processo poderão também ser enviados ao Windows Event Log.
 
 O log detalhado continuará sob controle da aplicação.
 
@@ -1005,14 +989,11 @@ Falta de espaço deverá impedir início inseguro da operação.
 
 ---
 
-## 60. Desinstalação
+## 60. Remoção da aplicação
 
-Por padrão, a desinstalação deverá remover:
+Por padrão, remover ou substituir a pasta de binários afetará somente a aplicação distribuída.
 
-- aplicação;
-- Windows Service;
-- configurações operacionais associadas à instalação;
-- regra de firewall quando apropriado.
+Uma remoção administrativa completa poderá também retirar configurações operacionais como a regra de firewall e o certificado quando apropriado.
 
 Mas deverá preservar:
 
@@ -1031,7 +1012,7 @@ salvo exclusão explicitamente solicitada.
 Nunca:
 
 ```text
-Desinstalar
+Remover aplicação
 → apagar todos os serviços automaticamente
 ```
 
@@ -1039,15 +1020,15 @@ A remoção definitiva de dados deverá ser ação separada e explícita.
 
 ---
 
-## 62. Reinstalação
+## 62. Nova distribuição sobre dados existentes
 
-Se o instalador encontrar dados existentes, não deverá sobrescrevê-los silenciosamente.
+Se a preparação ou a nova aplicação encontrar dados existentes, não deverá sobrescrevê-los silenciosamente.
 
 Deverá identificar o cenário como:
 
 - atualização;
 - reparo;
-- reinstalação;
+- nova distribuição;
 - recuperação.
 
 ---
@@ -1059,7 +1040,7 @@ Fluxo:
 ```text
 Preparar máquina Windows compatível
         ↓
-Instalar Reset Service
+Copiar publicação self-contained
         ↓
 Configurar rede/HTTPS
         ↓
@@ -1079,13 +1060,13 @@ Autenticar novamente
 ## Administrador
 
 ```text
-instala uma vez
+prepara a máquina uma vez
       ↓
-configura a máquina hospedeira
+distribui a pasta self-contained
       ↓
 cria primeiro Admin
       ↓
-mantém uma instalação central
+abre e fecha ResetService.exe conforme a operação
 ```
 
 ## Usuários
@@ -1119,6 +1100,8 @@ login
 | Navegador legado | Sem garantia completa |
 | Internet | Não necessária |
 | Instalação nas estações | Não |
+| Inicialização automática | Não |
+| Processo residente quando fechado | Não |
 | Acesso por IP | Apenas contingência |
 | URL amigável | Preferencial |
 
@@ -1144,29 +1127,33 @@ login
 16. HTTPS será utilizado.
 17. Certificado deverá ser confiável pelos clientes.
 18. Porta padrão preferencial será 443.
-19. A aplicação será instalada uma vez centralmente.
-20. O deploy será self-contained quando apropriado.
+19. A máquina hospedeira será preparada uma vez para a operação centralizada.
+20. O deploy será self-contained.
 21. Aplicação e dados permanecerão separados.
-22. O Reset Service executará como Windows Service.
-23. Não dependerá de usuário conectado ao Windows.
-24. Startup será automático.
-25. Recuperação automática limitada poderá ser configurada.
-26. Firewall deverá expor somente o necessário.
-27. Primeiro Administrador será criado através de bootstrap local.
-28. Atualizações funcionarão offline.
-29. Novos comandos serão interrompidos antes de manutenção.
-30. A fila deverá ser drenada antes de shutdown planejado.
-31. Backup pré-update será recomendado, não obrigatório.
-32. Migrations serão controladas pelo processo de atualização.
-33. Rollback de banco não será presumido seguro.
-34. Health check será executado após atualização.
-35. Desinstalação preservará dados por padrão.
-36. Recuperação total deverá funcionar em outra máquina compatível.
+22. A aplicação será iniciada sob demanda por `ResetService.exe` no host.
+23. Não haverá inicialização automática com o Windows.
+24. A URL responderá somente enquanto a aplicação estiver aberta.
+25. URL ou atalho em cliente não iniciará a aplicação remotamente.
+26. Somente uma instância poderá executar por vez na mesma máquina hospedeira.
+27. O encerramento planejado interromperá aceitação, drenará a fila e terminará o processo.
+28. Quando fechada, a aplicação não manterá processo residente.
+29. Hosted services existirão somente durante a vida do executável.
+30. Firewall deverá expor somente o necessário.
+31. Primeiro Administrador será criado através de bootstrap local.
+32. Atualizações funcionarão offline.
+33. Novos comandos serão interrompidos antes de manutenção.
+34. A fila deverá ser drenada antes de shutdown planejado.
+35. Backup pré-update será recomendado, não obrigatório.
+36. Migrations serão controladas pelo processo de atualização.
+37. Rollback de banco não será presumido seguro.
+38. Health check será executado após atualização.
+39. Remover ou substituir binários preservará dados por padrão.
+40. Recuperação total deverá funcionar em outra máquina compatível.
 
 ---
 
 ## 67. Estado da decisão
 
-**PLANNING-015 — Implantação, Instalação, Atualização e Operação: CONCLUÍDA E APROVADA.**
+**PLANNING-015 — Implantação, Distribuição, Atualização e Operação: CONCLUÍDA E APROVADA.**
 
-A arquitetura não depende de um servidor Windows dedicado. O Reset Service poderá funcionar em notebook, desktop ou servidor compatível, permanecendo acessível pelos navegadores dos computadores da rede.
+A arquitetura não depende de um servidor Windows dedicado. O Reset Service poderá funcionar sob demanda em notebook, desktop ou servidor compatível e permanecerá acessível pelos navegadores da rede somente enquanto o executável estiver aberto na máquina hospedeira.

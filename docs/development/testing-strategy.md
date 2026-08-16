@@ -25,7 +25,7 @@ A estratégia deverá garantir principalmente:
 - geração documental;
 - backup e restauração;
 - migrations;
-- instalação e atualização;
+- distribuição e atualização;
 - compatibilidade dos ambientes suportados.
 
 ---
@@ -61,7 +61,7 @@ Serão utilizados quatro níveis principais.
 | Unitário | Regras de negócio isoladas |
 | Integração | Banco, backend, autenticação, fila e infraestrutura |
 | End-to-end | Fluxos completos pelo navegador |
-| Operacional | Instalação, Windows, rede, backup e atualização |
+| Operacional | Distribuição, Windows, rede, backup e atualização |
 
 Cada nível será utilizado somente onde trouxer valor real.
 
@@ -634,6 +634,18 @@ Restore
 Estado A
 ```
 
+O agendamento automático também deverá cobrir o ciclo sob demanda:
+
+```text
+horário ocorre com a aplicação fechada
+↓
+próxima inicialização
+↓
+no máximo um backup automático pendente
+```
+
+Não poderá ser criada uma execução para cada dia perdido.
+
 ---
 
 ## 36. Conteúdo restaurado
@@ -722,10 +734,10 @@ Inclui:
 - maintenance mode;
 - bloqueio de novos comandos;
 - drenagem da fila;
-- parada do serviço;
+- encerramento da aplicação;
 - migration;
 - atualização dos binários;
-- inicialização;
+- execução da nova versão;
 - health check.
 
 ---
@@ -738,11 +750,11 @@ Quando houver migration incompatível, o processo de recuperação deverá ser t
 
 ---
 
-## 43. Instalação
+## 43. Distribuição
 
-A automação de testes não substitui instalação real em Windows.
+A automação de testes não substitui a validação da publicação self-contained em Windows.
 
-Antes da v1.0 será obrigatório validar instalação em ambientes representativos.
+Antes da v1.0 será obrigatório validar cópia ou extração da distribuição, preparação do host e operação em ambientes representativos.
 
 ---
 
@@ -753,18 +765,32 @@ Deverá existir teste completo em máquina Windows 11 compatível.
 Fluxo:
 
 ```text
-Instalar
+Disponibilizar publicação self-contained
 ↓
-reiniciar
+executar ResetService.exe manualmente
 ↓
-sem login interativo
+navegador padrão abre no host
 ↓
-Windows Service inicia
+outro computador acessa pela LAN
 ↓
-outro computador acessa
+solicitar encerramento planejado
+↓
+novos comandos são bloqueados
+↓
+comandos aceitos são drenados
+↓
+processo termina e URL fica indisponível
+↓
+reiniciar Windows
+↓
+aplicação permanece parada
+↓
+executar ResetService.exe novamente
 ↓
 login funciona
 ```
+
+Também deverá ser comprovado que uma segunda instância simultânea na mesma máquina é bloqueada e que executar o binário por UNC ou por uma estação cliente não é uma operação suportada.
 
 ---
 
@@ -778,7 +804,7 @@ Esse teste determinará quais versões/edições poderão ser declaradas oficial
 
 ## 46. Notebook hospedeiro
 
-Quando notebook fizer parte dos testes de implantação, deverá ser validado o comportamento das configurações de energia necessárias para manter o serviço disponível.
+Quando notebook fizer parte dos testes de implantação, deverá ser validado o comportamento das configurações de energia necessárias para manter a aplicação disponível durante sua execução.
 
 ---
 
@@ -1002,7 +1028,7 @@ Uma release deverá adicionalmente possuir:
 
 - build de Release aprovado;
 - migrations validadas;
-- instalação/atualização testada;
+- distribuição/atualização testada;
 - fluxo multiusuário validado;
 - segurança crítica verificada;
 - backup/restauração validado quando afetado;

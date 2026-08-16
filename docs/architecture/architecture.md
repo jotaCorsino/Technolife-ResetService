@@ -65,7 +65,7 @@ A aplicação não dependerá de internet para seu funcionamento normal.
  ┌───────────────────────────────────────┐
  │ RESET SERVICE                         │
  │                                       │
- │ Windows Service                       │
+ │ ResetService.exe sob demanda          │
  │ ASP.NET Core                          │
  │ Razor Pages                           │
  │ SignalR                               │
@@ -162,7 +162,7 @@ A stack definida para a versão 1.0 será:
 | PDF | PDFsharp + MigraDoc |
 | Servidor HTTP | Kestrel |
 | Ambiente | Windows |
-| Execução | Windows Service |
+| Execução | `ResetService.exe` sob demanda |
 | Deploy | Self-contained `win-x64` |
 
 ---
@@ -952,31 +952,25 @@ ASP.NET Core
 
 ---
 
-## 48. Serviço do Windows
+## 48. Execução sob demanda
 
-A aplicação será instalada como Serviço do Windows.
-
-Nome conceitual:
+A aplicação será distribuída como executável Windows self-contained e iniciada sob demanda na máquina hospedeira.
 
 ```text
-Technolife Reset Service
-```
-
-Inicialização:
-
-```text
-Automatic
-```
-
-Após reinicialização normal da máquina:
-
-```text
-Windows inicia
+operador executa ResetService.exe
       ↓
-Reset Service inicia
+processo inicia Kestrel, SQLite e hosted workers
       ↓
-endereço volta a responder na LAN
+navegador padrão abre no host
+      ↓
+endereço responde na LAN
 ```
+
+Após reinicialização do Windows, a aplicação permanecerá parada até nova execução manual. Uma URL ou atalho em uma estação cliente não inicia o processo remotamente.
+
+A distribuição deverá impedir duas instâncias simultâneas na mesma máquina hospedeira. O mecanismo técnico será definido quando esse item for implementado.
+
+No encerramento planejado, a aplicação deixará de aceitar novos comandos, drenará os comandos aceitos e encerrará completamente o host e o processo. `BackgroundService` e `IHostedService` continuam válidos como componentes internos somente durante a vida do executável.
 
 ---
 
@@ -999,7 +993,7 @@ O ambiente de produção não deverá depender obrigatoriamente de instalação 
 Estrutura conceitual:
 
 ```text
-C:\Program Files\Technolife\ResetService\
+C:\CaminhoEscolhido\ResetService\
 └── aplicação
 
 C:\ProgramData\Technolife\ResetService\
@@ -1011,6 +1005,8 @@ C:\ProgramData\Technolife\ResetService\
 ```
 
 Arquivos binários e dados persistentes deverão permanecer separados.
+
+A pasta da aplicação poderá ser compartilhada em rede para administração, cópia ou atualização. Executar `ResetService.exe` por UNC a partir de uma estação cliente não será suportado, e o SQLite operacional deverá permanecer local na máquina hospedeira, nunca em caminho UNC.
 
 ---
 
@@ -1035,13 +1031,15 @@ Backup recomendado
      ↓
 Modo de manutenção
      ↓
-Parar serviço
+Parar de aceitar novos comandos
+     ↓
+Drenar comandos aceitos e encerrar a aplicação
      ↓
 Aplicar migração
      ↓
 Atualizar binários
      ↓
-Iniciar serviço
+Executar a nova versão
      ↓
 Verificar funcionamento
 ```

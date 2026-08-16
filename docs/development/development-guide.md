@@ -326,7 +326,7 @@ SignalR
 System.Threading.Channels
 ASP.NET Core Identity
 PDFsharp/MigraDoc
-Windows Service
+Executável Windows self-contained sob demanda
 ```
 
 Nenhuma delas deverá ser substituída implicitamente.

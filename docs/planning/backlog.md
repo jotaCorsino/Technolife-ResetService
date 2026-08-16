@@ -1392,6 +1392,8 @@ Executar backup periódico quando habilitado.
 - execução diária;
 - horário configurável;
 - nenhuma execução quando desabilitado;
+- horário ocorrido com a aplicação fechada gera no máximo um backup automático pendente na próxima inicialização;
+- dias perdidos não geram uma execução retroativa por dia;
 - falha registrada e informada ao Admin.
 
 ---
@@ -1477,24 +1479,25 @@ Gerar artefato de produção para Windows x64.
 
 ---
 
-## BL-070 — Instalação da máquina hospedeira
+## BL-070 — Distribuição e preparação da máquina hospedeira
 
 **Prioridade:** Crítica  
 **Dependências:** BL-069.
 
 ### Objetivo
 
-Preparar desktop, notebook ou Windows Server compatível.
+Distribuir a aplicação e preparar desktop, notebook ou Windows Server compatível.
 
 ### Critérios de aceite
 
-Instalação configura:
+Distribuição e preparação contemplam:
 
-- aplicação;
-- ProgramData;
+- pasta local escolhida para a aplicação self-contained;
+- `ProgramData` separado para dados persistentes;
 - ACLs;
-- serviço;
 - diretórios necessários.
+
+Copiar ou extrair a pasta será suficiente para distribuir os binários. Uma ferramenta opcional de preparação poderá existir, mas instalador tradicional e Serviço do Windows não serão requisitos.
 
 ---
 
@@ -1514,24 +1517,30 @@ Disponibilizar o produto de maneira simples na LAN.
 - HTTPS;
 - certificado confiável;
 - firewall restrito ao necessário;
-- cliente não precisa conhecer porta/banco.
+- cliente não precisa conhecer porta/banco;
+- URL responde somente enquanto a aplicação estiver aberta no host.
 
 ---
 
-## BL-072 — Startup e recuperação do serviço
+## BL-072 — Inicialização e encerramento sob demanda
 
 **Prioridade:** Alta  
 **Dependências:** BL-070.
 
 ### Objetivo
 
-Garantir inicialização previsível.
+Garantir ciclo de vida previsível da aplicação centralizada.
 
 ### Critérios de aceite
 
-- inicia automaticamente após reboot;
-- não depende de login do Windows;
-- recuperação controlada após falhas transitórias.
+- operador inicia `ResetService.exe` manualmente na máquina hospedeira;
+- processo inicia Kestrel, SQLite e hosted workers internos;
+- navegador padrão abre no host;
+- URL ou atalho de cliente não inicia a aplicação remotamente;
+- execução por UNC ou em estação cliente não é suportada;
+- segunda instância simultânea no mesmo host é bloqueada;
+- encerramento planejado bloqueia novos comandos, drena os aceitos e termina o processo completamente;
+- aplicação não inicia automaticamente após reboot e não permanece residente quando fechada.
 
 ---
 
@@ -1552,9 +1561,10 @@ Processo inclui:
 - manutenção;
 - bloqueio de novos comandos;
 - drenagem;
-- parada;
-- instalação;
+- encerramento da aplicação;
+- substituição dos binários;
 - migration quando aplicável;
+- execução da nova versão;
 - health check.
 
 ---
@@ -1578,19 +1588,19 @@ Garantir evolução segura da persistência.
 
 ---
 
-## BL-075 — Desinstalação e reinstalação seguras
+## BL-075 — Remoção e nova distribuição seguras
 
 **Prioridade:** Alta  
 **Dependências:** BL-070.
 
 ### Objetivo
 
-Evitar perda acidental durante manutenção do produto.
+Evitar perda acidental ao substituir ou remover os binários do produto.
 
 ### Critérios de aceite
 
-- desinstalação preserva dados por padrão;
-- reinstalação detecta dados existentes;
+- remover ou substituir a pasta da aplicação preserva os dados persistentes por padrão;
+- nova distribuição detecta dados existentes;
 - nenhuma sobrescrita silenciosa.
 
 ---
@@ -1602,7 +1612,7 @@ Evitar perda acidental durante manutenção do produto.
 
 ### Objetivo
 
-Confirmar matriz oficial de compatibilidade.
+Confirmar a matriz oficial de compatibilidade e o modelo operacional sob demanda.
 
 ### Critérios de aceite
 
@@ -1610,6 +1620,10 @@ Confirmar matriz oficial de compatibilidade.
 - Windows 11 testado;
 - Chrome testado;
 - Edge testado;
+- publicação self-contained executada manualmente no host;
+- navegador aberto no host e acesso LAN validados;
+- encerramento gracioso termina o processo e torna a URL indisponível;
+- após reboot a aplicação permanece parada até nova execução manual;
 - ambientes legados classificados como melhor esforço.
 
 ---

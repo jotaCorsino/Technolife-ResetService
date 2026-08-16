@@ -733,25 +733,32 @@ Implementar:
 
 - publicação `win-x64`;
 - self-contained;
-- instalação;
-- Windows Service;
+- distribuição por pasta local;
+- preparação única do host e dos diretórios persistentes;
+- execução sob demanda por `ResetService.exe`;
+- abertura do navegador padrão no host;
+- bloqueio de segunda instância no mesmo host;
+- encerramento gracioso com drenagem da fila;
+- término completo do processo;
 - ACL;
 - firewall;
 - HTTPS;
-- hostname/DNS;
-- startup automático;
-- recuperação do serviço.
+- hostname/DNS.
 
 Resultado esperado:
 
 ```text
-Instalar em máquina compatível
+Distribuir em máquina compatível
         ↓
-Reiniciar
+executar ResetService.exe no host
+        ↓
+navegador padrão abre
         ↓
 https://resetservice/
         ↓
-Sistema disponível
+clientes acessam enquanto o processo está ativo
+        ↓
+encerramento gracioso termina o processo
 ```
 
 ---
@@ -770,8 +777,9 @@ Implementar:
 - migration bundle;
 - health check;
 - rollback de binários;
-- desinstalação;
-- reinstalação segura.
+- encerramento e nova execução da aplicação;
+- remoção de binários;
+- nova distribuição segura.
 
 ## Gate
 
@@ -807,9 +815,37 @@ Inclui:
 - segurança;
 - documentos;
 - backup/restauração;
-- instalação;
+- distribuição self-contained;
+- execução manual de `ResetService.exe`;
+- abertura automática do navegador no host;
+- bloqueio de segunda instância;
+- encerramento gracioso e término do processo;
+- URL indisponível com a aplicação fechada;
+- permanência parada após reboot;
 - atualização;
 - documentação final.
+
+Prova operacional obrigatória:
+
+```text
+publicação disponível
+↓
+executar ResetService.exe manualmente
+↓
+navegador padrão abre no host
+↓
+cliente LAN acessa
+↓
+encerramento gracioso
+↓
+processo termina e URL fica indisponível
+↓
+reiniciar Windows
+↓
+aplicação permanece parada
+↓
+executar ResetService.exe manualmente novamente
+```
 
 Se SQLite não atender aos testes representativos, deverá ser formalmente reavaliado antes da liberação.
 
@@ -825,7 +861,7 @@ Reset Service v1.0
 
 deverá estar:
 
-- instalável;
+- distribuível;
 - operacional;
 - multiusuário;
 - protegido;
