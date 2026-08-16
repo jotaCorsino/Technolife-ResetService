@@ -11,13 +11,13 @@
 
 - Backlog item: BL-005 — Command Queue
 - Tarefa: BL-005/T01 — Criar fila sequencial base de comandos
-- Status: Pronta para implementação
-- Responsável técnico: Codex
+- Status: Em validação
+- Responsável técnico: Revisão ChatGPT
 
 ## Último estado aprovado
 
-- Último commit aprovado: f33cbbc
-- Mensagem: feat(concurrency): add conflict translation
+- Último commit aprovado: 317b005
+- Mensagem: docs(planning): start sprint 03
 - Branch: main
 - Working tree: Clean
 - Última verificação: 2026-08-16
@@ -32,11 +32,12 @@ Nenhum.
 
 ## Próximo passo
 
-Executar BL-005/T01 — Criar fila sequencial base de comandos.
+Verificar no GitHub a entrega de BL-005/T01.
 
 ## Observações imediatas
 
-- Sprint 02 concluída com BL-003 e BL-004.
-- BL-005 será implementado em subtarefas pequenas e verificáveis.
-- A primeira subtarefa não deve antecipar SignalR nem BL-006.
-- Concorrência otimista já está disponível e continua complementar à futura Command Queue.
+- Fila bounded/FIFO base implementada.
+- Backpressure validado.
+- Processamento de comandos ainda não implementado.
+- Scopes e confirmação pós-execução pertencem à próxima subtarefa.
+- BL-006 permanece fora de escopo.
