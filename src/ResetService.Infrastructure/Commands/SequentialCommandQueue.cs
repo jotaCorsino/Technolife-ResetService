@@ -30,4 +30,9 @@ public sealed class SequentialCommandQueue<TCommand>
     {
         return _channel.Reader.ReadAsync(cancellationToken);
     }
+
+    public void StopAccepting()
+    {
+        _channel.Writer.TryComplete();
+    }
 }

@@ -1,3 +1,4 @@
+using System.Threading.Channels;
 using ResetService.Infrastructure.Commands;
 
 namespace ResetService.IntegrationTests;
@@ -94,5 +95,22 @@ public sealed class SequentialCommandQueueTests
         var queue = new SequentialCommandQueue<string>(capacity: 1);
 
         Assert.Throws<ArgumentNullException>(() => queue.EnqueueAsync(null!));
+    }
+
+    [Fact]
+    public async Task StopAcceptingRejectsNewCommandsAndPreservesAcceptedCommands()
+    {
+        var queue = new SequentialCommandQueue<int>(capacity: 2);
+
+        await queue.EnqueueAsync(1);
+        await queue.EnqueueAsync(2);
+
+        queue.StopAccepting();
+        queue.StopAccepting();
+
+        await Assert.ThrowsAsync<ChannelClosedException>(() => queue.EnqueueAsync(3).AsTask());
+        Assert.Equal(1, await queue.DequeueAsync());
+        Assert.Equal(2, await queue.DequeueAsync());
+        await Assert.ThrowsAsync<ChannelClosedException>(() => queue.DequeueAsync().AsTask());
     }
 }

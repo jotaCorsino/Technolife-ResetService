@@ -1,3 +1,4 @@
+using ResetService.Infrastructure.Commands;
 using ResetService.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddResetServicePersistence(builder.Configuration);
+builder.Services.AddResetServiceCommands(builder.Configuration);
 
 var app = builder.Build();
 
