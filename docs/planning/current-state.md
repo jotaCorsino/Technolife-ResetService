@@ -10,14 +10,14 @@
 ## Trabalho atual
 
 - Backlog item: BL-004 — Infraestrutura de concorrência
-- Tarefa: BL-004/T01 — Implementar token Version e detectar gravação obsoleta
+- Tarefa: BL-004/T02 — Traduzir conflito de concorrência para resultado funcional
 - Status: Em validação
 - Responsável técnico: Revisão ChatGPT
 
 ## Último estado aprovado
 
-- Último commit aprovado: ee82f08
-- Mensagem: test(persistence): validate sqlite wal mode
+- Último commit aprovado: d2214b1
+- Mensagem: feat(concurrency): add optimistic version control
 - Branch: main
 - Working tree: Clean
 - Última verificação: 2026-08-16
@@ -25,6 +25,7 @@
 ## Concluído nesta sprint
 
 - BL-003 — Persistência EF Core + SQLite
+- BL-004/T01 — Token Version e detecção de gravação obsoleta
 
 ## Bloqueios
 
@@ -32,12 +33,12 @@ Nenhum.
 
 ## Próximo passo
 
-Verificar no GitHub a entrega de BL-004/T01.
+Verificar no GitHub a entrega de BL-004/T02.
 
 ## Observações imediatas
 
 - BL-003 concluído.
-- Concorrência utiliza Version gerenciado pela aplicação.
-- Esta subtarefa valida detecção técnica de estado obsoleto.
-- Tradução funcional do conflito ainda não foi implementada.
+- Conflito técnico de concorrência possui tradução funcional.
+- Tradução não depende de HTTP.
+- Política de merge/retry não foi definida.
 - Command Queue continua fora de escopo.

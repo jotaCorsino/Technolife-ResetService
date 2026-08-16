@@ -8,7 +8,7 @@ namespace ResetService.IntegrationTests;
 public sealed class VersionConcurrencyTests
 {
     [Fact]
-    public async Task StaleUpdateIsRejectedAndDoesNotOverwriteNewerState()
+    public async Task StaleUpdateIsTranslatedAndDoesNotOverwriteNewerState()
     {
         var testDirectory = Path.Combine(
             Path.GetTempPath(),
@@ -65,8 +65,18 @@ public sealed class VersionConcurrencyTests
 
                 entityB.Value = "Updated by B";
 
-                await Assert.ThrowsAsync<DbUpdateConcurrencyException>(
+                var exception = await Assert.ThrowsAsync<DbUpdateConcurrencyException>(
                     () => contextB.SaveChangesAsync());
+                var conflict = ConcurrencyConflictTranslator.Translate(exception);
+
+                Assert.Equal(ConcurrencyConflict.DefaultCode, conflict.Code);
+                Assert.Equal(ConcurrencyConflict.DefaultMessage, conflict.Message);
+                Assert.False(string.IsNullOrWhiteSpace(conflict.Message));
+                Assert.DoesNotContain("DbUpdateConcurrencyException", conflict.Message, StringComparison.OrdinalIgnoreCase);
+                Assert.DoesNotContain("EF Core", conflict.Message, StringComparison.OrdinalIgnoreCase);
+                Assert.DoesNotContain("SQLite", conflict.Message, StringComparison.OrdinalIgnoreCase);
+                Assert.DoesNotContain("SQL", conflict.Message, StringComparison.OrdinalIgnoreCase);
+                Assert.DoesNotContain("stack trace", conflict.Message, StringComparison.OrdinalIgnoreCase);
             }
 
             await using (var verificationContext = new ConcurrencyTestDbContext(options))
