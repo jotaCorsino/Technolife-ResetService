@@ -1,1181 +1,229 @@
-# Reset Service — Architecture
+# Reset Service — Arquitetura
 
 **Projeto:** Reset Service  
 **Empresa:** Technolife  
-**Documento:** Arquitetura e Stack Tecnológica  
-**Versão do documento:** 1.0  
-**Status:** Aprovado  
-**Referências:** documentos em `docs/product/`
+**Versão:** 2.0  
+**Status:** Aprovado para implementação
 
----
+## 1. Visão
 
-## 1. Objetivo
-
-Este documento define a arquitetura técnica principal do Reset Service.
-
-Seu escopo inclui:
-
-- modelo de implantação;
-- arquitetura da aplicação;
-- backend;
-- frontend;
-- persistência;
-- concorrência;
-- atualização em tempo real;
-- autenticação;
-- geração de PDF;
-- execução no Windows;
-- organização inicial da solução;
-- princípios técnicos obrigatórios.
-
----
-
-## 2. Visão arquitetural
-
-O Reset Service será uma:
-
-> **Aplicação web local, centralizada, monolítica modular e multiusuário, hospedada em Windows e acessada pelos computadores da rede interna através de navegador.**
-
-A aplicação não dependerá de internet para seu funcionamento normal.
-
----
-
-## 3. Topologia
+O Reset Service será uma aplicação web local, centralizada e simples, acessada por navegadores na rede interna da Technolife.
 
 ```text
-                    REDE LOCAL TECHNOLIFE
-
- ┌─────────────────┐
- │ PC Técnico 1    │
- │ Edge / Chrome   │
- └────────┬────────┘
-          │
- ┌────────▼────────┐
- │ PC Técnico 2    │
- │ Edge / Chrome   │
- └────────┬────────┘
-          │
- ┌────────▼────────┐
- │ Administração   │
- │ Edge / Chrome   │
- └────────┬────────┘
-          │
-          │ HTTPS / LAN
-          ▼
- ┌───────────────────────────────────────┐
- │ RESET SERVICE                         │
- │                                       │
- │ Windows Service                       │
- │ ASP.NET Core                          │
- │ Razor Pages                           │
- │ SignalR                               │
- │ ASP.NET Core Identity                 │
- │ Command Queue                         │
- │ EF Core                               │
- └───────────────────┬───────────────────┘
-                     │
-                     ▼
-              SQLite local / WAL
+PCs da LAN
+   ↓ HTTP/HTTPS
+ResetService.Web
+   ↓
+EF Core
+   ↓
+SQLite local
 ```
 
----
+A arquitetura deve favorecer manutenção, atualização e entendimento simples do código.
 
-## 4. Acesso dos usuários
-
-Não será necessário instalar o Reset Service nos computadores dos usuários.
-
-O acesso ocorrerá através de navegador moderno.
-
-Exemplo:
+## 2. Topologia
 
 ```text
-https://resetservice/
+                 REDE LOCAL
+
+PC Técnico 1 ─┐
+PC Técnico 2 ─┼── navegador ──► Reset Service
+Administração ┘                    │
+                                   ├── aplicação web
+                                   ├── banco SQLite
+                                   ├── uploads
+                                   └── backups
 ```
 
-ou outro nome interno definido na implantação.
+O banco permanece no disco local da máquina host. Estações nunca acessam diretamente o arquivo SQLite.
 
-O objetivo é permitir:
+## 3. Stack
 
-```text
-qualquer computador autorizado da LAN
-               ↓
-            navegador
-               ↓
-     endereço do Reset Service
-               ↓
-              login
-```
+- C#;
+- .NET 10;
+- ASP.NET Core;
+- Razor Pages;
+- HTML e CSS;
+- JavaScript nativo onde trouxer ganho de UX;
+- Entity Framework Core;
+- SQLite;
+- autenticação local por cookie/Identity;
+- Kestrel;
+- Windows como ambiente de hospedagem.
 
----
+## 4. Modelo de aplicação
 
-## 5. Nome de rede
+A aplicação será um monólito simples.
 
-A utilização cotidiana não deverá depender de endereço IP.
-
-Deverá ser configurado um nome interno estável.
-
-Preferência:
-
-```text
-https://resetservice/
-```
-
-ou, conforme infraestrutura de nomes adotada:
-
-```text
-https://resetservice.technolife.local/
-```
-
-Mudanças futuras de IP do servidor não deverão exigir alteração do endereço utilizado pelos usuários.
-
----
-
-## 6. HTTPS
-
-A implantação oficial deverá utilizar HTTPS dentro da LAN.
-
-O certificado utilizado deverá ser confiável pelos computadores autorizados da Technolife.
-
-Não será utilizado certificado de desenvolvimento em produção.
-
-A estratégia concreta de certificado e resolução de nome será definida na documentação de implantação.
-
----
-
-## 7. Stack principal
-
-A stack definida para a versão 1.0 será:
-
-| Área | Tecnologia |
-|---|---|
-| Linguagem | C# |
-| Runtime | .NET 10 LTS |
-| Backend web | ASP.NET Core 10 |
-| Frontend | Razor Pages |
-| Interatividade | JavaScript nativo / Fetch |
-| Tempo real | ASP.NET Core SignalR |
-| Fila interna | System.Threading.Channels |
-| Persistência | Entity Framework Core 10 |
-| Banco | SQLite |
-| Autenticação | ASP.NET Core Identity |
-| Sessão | Cookie |
-| PDF | PDFsharp + MigraDoc |
-| Servidor HTTP | Kestrel |
-| Ambiente | Windows |
-| Execução | Windows Service |
-| Deploy | Self-contained `win-x64` |
-
----
-
-## 8. Tipo de arquitetura
-
-A aplicação será um:
-
-> **Monólito modular.**
-
-Não serão utilizados microsserviços na versão 1.0.
-
-Teremos:
-
-```text
-uma aplicação
-um processo principal
-uma implantação
-um banco operacional
-```
-
-mas com responsabilidades internas separadas.
-
----
-
-## 9. Organização inicial da solução
-
-Estrutura proposta:
+A estrutura preferencial é um único projeto web de produção, além dos testes:
 
 ```text
 src/
-├── ResetService.Web/
-├── ResetService.Core/
-└── ResetService.Infrastructure/
+└── ResetService.Web/
+    ├── Data/
+    ├── Models/
+    ├── Services/
+    ├── Pages/
+    ├── wwwroot/
+    └── Program.cs
 
 tests/
 └── ResetService.Tests/
-
-docs/
-├── product/
-├── architecture/
-├── planning/
-└── development/
 ```
 
-A estrutura poderá ser refinada durante a criação inicial da solução sem quebrar os princípios deste documento.
+Os projetos `ResetService.Core` e `ResetService.Infrastructure` existentes são legado da fundação anterior. Durante o pivô, seus elementos úteis poderão ser incorporados ao projeto web para reduzir assemblies e abstrações sem benefício prático.
 
----
+## 5. Frontend
 
-## 10. ResetService.Web
+Não haverá SPA separada.
 
-Responsável por:
+A interface utilizará Razor Pages e progressive enhancement com JavaScript para recursos como:
 
-- Razor Pages;
-- endpoints HTTP;
-- autenticação da interface;
-- autorização;
-- composição da aplicação;
+- autosave;
+- feedback de salvamento;
+- editor rich text;
+- menus e modais;
+- busca rápida;
+- filtros;
+- cópia de comandos;
+- atualização parcial quando fizer sentido.
+
+Nenhum recurso obrigatório dependerá de CDN ou internet.
+
+## 6. Persistência
+
+A versão inicial utilizará:
+
+```text
+EF Core + SQLite
+```
+
+O arquivo operacional ficará apenas na máquina host.
+
+Transações deverão ser curtas. A aplicação não precisa de uma fila global de escrita para o novo domínio documental.
+
+## 7. Concorrência
+
+O sistema será multiusuário, mas não terá edição colaborativa em tempo real na primeira versão.
+
+Entidades mutáveis relevantes, principalmente `Document`, terão um campo de versão.
+
+Fluxo esperado:
+
+```text
+Usuário A abre Version 4
+Usuário B salva e gera Version 5
+Usuário A tenta salvar Version 4
+        ↓
+conflito detectado
+        ↓
+nenhuma sobrescrita silenciosa
+```
+
+A interface deverá explicar o conflito e preservar o conteúdo local sempre que possível.
+
+## 8. Recursos removidos da arquitetura anterior
+
+Não são requisitos centrais da nova versão:
+
 - SignalR;
-- JavaScript;
-- CSS;
-- apresentação;
-- integração entre interface e casos de uso.
+- System.Threading.Channels / Command Queue;
+- serialização global de comandos;
+- OperationId genérico para toda mutação;
+- workflow de execução de serviços;
+- snapshots de conclusão;
+- geração de PDF como parte do núcleo;
+- sincronização contínua de navegadores.
 
----
+Esses recursos só poderão ser reintroduzidos se uma necessidade real e mensurável aparecer.
 
-## 11. ResetService.Core
+## 9. Pesquisa
 
-Representará o núcleo das regras do produto.
+A pesquisa será parte central do produto.
 
-Poderá conter módulos conceituais como:
+Inicialmente poderá usar recursos do próprio SQLite/EF Core com normalização adequada para:
 
-```text
-Services
-Templates
-Workflow
-Users
-Documents
-Settings
-Backup
-```
+- título;
+- resumo;
+- tags;
+- categoria;
+- conteúdo textual.
 
-Será responsável principalmente por:
+A implementação deve aceitar evolução posterior sem exigir um serviço externo de busca no MVP.
 
-- regras de negócio;
-- casos de uso;
-- modelos do domínio;
-- validações;
-- contratos necessários à infraestrutura.
+## 10. Editor
 
----
+O editor é uma das poucas áreas em que biblioteca client-side madura é preferível a implementação própria.
 
-## 12. ResetService.Infrastructure
+A escolha concreta será feita durante a Sprint de editor e deverá suportar conteúdo técnico, incluindo:
 
-Responsável por detalhes técnicos como:
-
-- EF Core;
-- SQLite;
-- ASP.NET Core Identity;
-- persistência;
-- filesystem;
-- geração de PDF;
-- backup;
-- logs;
-- integração com Windows.
-
----
-
-## 13. Frontend
-
-A versão 1.0 utilizará Razor Pages.
-
-Não será construída uma SPA separada com React, Angular ou Vue.
-
-A interface utilizará:
-
-```text
-Razor Pages
-+
-HTML
-+
-CSS
-+
-JavaScript nativo
-```
-
-O objetivo é reduzir:
-
-- dependências;
-- toolchain;
-- implantação;
-- manutenção;
-- complexidade.
-
----
-
-## 14. Recursos offline
-
-Nenhum recurso obrigatório da interface deverá depender de CDN ou internet.
-
-Assets necessários serão entregues junto com a aplicação.
-
-Isso inclui, quando aplicável:
-
-- JavaScript;
-- CSS;
-- ícones;
-- fontes utilizadas pelo produto;
-- bibliotecas client-side necessárias.
-
----
-
-## 15. Interatividade
-
-A aplicação não dependerá de recarregar uma página inteira para toda operação.
-
-Ações frequentes poderão usar chamadas assíncronas.
-
-Exemplo:
-
-```text
-Usuário marca passo
-      ↓
-Fetch HTTP
-      ↓
-Servidor
-      ↓
-Validação
-      ↓
-Persistência
-      ↓
-Resposta
-      ↓
-Interface atualizada
-```
-
----
-
-## 16. Uso simultâneo do mesmo serviço
-
-Será requisito oficial que dois ou mais usuários possam abrir e trabalhar no mesmo serviço simultaneamente.
-
-Não haverá bloqueio exclusivo do tipo:
-
-```text
-Serviço bloqueado porque João está utilizando.
-```
-
-O objetivo será permitir:
-
-```text
-João
-→ executa uma ação
-
-Carlos
-→ executa outra ação
-
-ambos permanecem sincronizados
-```
-
----
-
-## 17. Atualização em tempo real
-
-Alterações confirmadas deverão ser propagadas automaticamente aos outros usuários que estiverem visualizando o mesmo contexto.
-
-Será utilizado ASP.NET Core SignalR.
-
-Exemplos de alterações:
-
-```text
-Passo concluído
-Passo marcado Não aplicável
-Observação adicionada
-Responsável alterado
-Status alterado
-Dados do serviço alterados
-Roteiro alterado
-```
-
----
-
-## 18. Grupos SignalR
-
-As conexões poderão ser agrupadas por contexto.
-
-Exemplo conceitual:
-
-```text
-service:142
-```
-
-Todos os navegadores atualmente acompanhando esse serviço poderão receber eventos relacionados a ele.
-
-Outros usuários não precisam receber eventos desnecessários.
-
----
-
-## 19. SignalR não é a fonte de verdade
-
-SignalR servirá para comunicação.
-
-Não armazenará o estado oficial.
-
-A regra será:
-
-```text
-Banco
-= fonte de verdade
-
-SignalR
-= mecanismo de propagação
-```
-
-Se existir qualquer dúvida sobre o estado, o frontend poderá solicitar novamente os dados atuais ao servidor.
-
----
-
-## 20. Eventos de atualização
-
-A aplicação poderá trabalhar com eventos conceituais como:
-
-```text
-StepStateChanged
-ObservationAdded
-ResponsibleChanged
-ServiceStatusChanged
-ServiceDetailsChanged
-RouteChanged
-```
-
-Eventos pequenos poderão atualizar diretamente a interface.
-
-Mudanças maiores poderão apenas instruir o navegador a recarregar determinada área.
-
----
-
-## 21. Fila de alterações
-
-Operações persistentes que alteram o estado da aplicação deverão passar por uma fila interna de comandos.
-
-A primeira implementação utilizará:
-
-```text
-System.Threading.Channels
-```
-
-Não serão necessários na versão 1.0:
-
-```text
-RabbitMQ
-Redis
-Kafka
-service bus externo
-```
-
----
-
-## 22. Fluxo de escrita
-
-O fluxo conceitual será:
-
-```text
-Usuário
-   ↓
-Requisição
-   ↓
-Validação inicial
-   ↓
-Command Queue
-   ↓
-Processamento ordenado
-   ↓
-Validação do estado atual
-   ↓
-Transação
-   ↓
-SQLite
-   ↓
-COMMIT
-   ↓
-SignalR
-   ↓
-Frontends atualizados
-```
-
----
-
-## 23. Confirmação da operação
-
-Uma operação não deverá ser apresentada como salva antes da persistência real.
-
-Fluxo obrigatório:
-
-```text
-Usuário executa ação
-        ↓
-Comando é processado
-        ↓
-Banco confirma COMMIT
-        ↓
-Servidor confirma sucesso
-        ↓
-Evento SignalR
-```
-
-Se uma operação falhar antes do COMMIT, não será considerada confirmada.
-
----
-
-## 24. Fila em memória
-
-A fila inicial será interna ao processo.
-
-Isso é suficiente porque a arquitetura prevê:
-
-```text
-uma única instância ativa
-do Reset Service
-```
-
-Não haverá cluster ou múltiplas instâncias concorrentes do backend na versão 1.0.
-
-Comandos ainda não persistidos não serão considerados concluídos.
-
----
-
-## 25. Serialização das escritas
-
-A fila permitirá controlar as operações mutáveis de maneira previsível, reduzindo contenção de escrita no SQLite.
-
-A aplicação deverá manter as transações curtas.
-
-Não deverão ser colocadas dentro de uma transação longa operações como:
-
-- geração de PDF;
-- espera por comunicação com navegador;
-- processamento demorado;
-- acesso desnecessário a arquivos.
-
----
-
-## 26. Fila não substitui concorrência
-
-A fila ordena operações recebidas pelo servidor, mas não elimina a possibilidade de um navegador trabalhar com um estado antigo.
-
-Por isso também haverá controle de concorrência otimista.
-
----
-
-## 27. Concorrência otimista
-
-Entidades mutáveis relevantes possuirão um token de versão gerenciado pela aplicação.
-
-Exemplo conceitual:
-
-```text
-Service
-
-Id
-...
-Version
-```
-
-Fluxo:
-
-```text
-Carlos carrega Version 15
-
-João altera
-Version passa para 16
-
-Carlos envia operação baseada em 15
-          ↓
-servidor detecta divergência
-          ↓
-não sobrescreve silenciosamente
-```
-
----
-
-## 28. Tratamento de conflito
-
-Quando a operação puder ser aplicada com segurança ao estado atual, o backend poderá tratá-la adequadamente.
-
-Quando houver conflito real, a operação será rejeitada e a interface receberá estado atualizado.
-
-Exemplo:
-
-```text
-Este serviço foi alterado por outro usuário.
-
-Os dados foram atualizados.
-Revise a informação antes de tentar novamente.
-```
-
----
-
-## 29. Atualização contínua
-
-A combinação será:
-
-```text
-Command Queue
-     ↓
-ordena alterações
-
-Optimistic Concurrency
-     ↓
-protege contra estado antigo
-
-SignalR
-     ↓
-mantém navegadores sincronizados
-```
-
-Esses três mecanismos são complementares.
-
----
-
-## 30. Operações idempotentes
-
-Operações críticas deverão, quando adequado, possuir identificação de operação.
-
-Exemplo conceitual:
-
-```text
-OperationId
-```
-
-Isso poderá impedir que reenvios ou duplos cliques produzam efeitos duplicados.
-
-Especialmente:
-
-- criação de serviço;
-- conclusão;
-- publicação de revisão;
-- cancelamento;
-- restauração.
-
----
-
-## 31. Banco de dados
-
-A versão 1.0 utilizará:
-
-```text
-SQLite
-+
-Entity Framework Core
-```
-
-O arquivo ativo do banco permanecerá no armazenamento local do servidor.
-
----
-
-## 32. Banco não ficará em compartilhamento de rede
-
-Não será permitido utilizar o arquivo SQLite operacional diretamente em:
-
-```text
-\\servidor\pasta\resetservice.db
-```
-
-O banco deverá permanecer no disco local da máquina que executa o Reset Service.
-
-Estações nunca acessam diretamente o arquivo.
-
----
-
-## 33. WAL
-
-O SQLite será configurado para operar em:
-
-```text
-WAL
-```
-
-quando aplicável à implementação final.
-
-Isso melhora a convivência entre leituras e escrita.
-
----
-
-## 34. Razão para SQLite
-
-A escala prevista é:
-
-- aproximadamente 1–20 usuários cadastrados;
-- aproximadamente 1–10 simultâneos;
-- operações pequenas;
-- histórico de dezenas de milhares de serviços.
-
-A combinação:
-
-```text
-SQLite
-+
-transações curtas
-+
-fila de escrita
-+
-controle de concorrência
-```
-
-é considerada proporcional ao problema.
-
----
-
-## 35. Critério de reavaliação
-
-SQLite não será tratado como decisão dogmática.
-
-Antes da implantação definitiva deverão existir testes de concorrência representativos.
-
-Se houver contenção incompatível com os requisitos de experiência, o banco poderá ser reavaliado.
-
-Possíveis candidatos futuros incluem:
-
-- SQL Server;
-- PostgreSQL.
-
-Não será adicionada abstração excessiva apenas para suportar teoricamente vários bancos.
-
----
-
-## 36. IDs de serviço
-
-O formato continuará:
-
-```text
-RS-AAAA-NNNNN
-```
-
-A geração será transacional.
-
-Deverá existir proteção no banco contra duplicação.
-
-Exemplo conceitual:
-
-```text
-ServiceNumberSequence
-
-Year
-LastNumber
-```
-
----
-
-## 37. Revisões
-
-A publicação de revisões também será transacional.
-
-A combinação:
-
-```text
-ModelId
-RevisionNumber
-```
-
-deverá possuir unicidade garantida na persistência.
-
----
-
-## 38. Datas
-
-Eventos serão registrados usando fonte temporal do servidor.
-
-A persistência utilizará representação temporal consistente, preferencialmente UTC para instantes técnicos.
-
-A interface apresentará horário adequado ao contexto da Technolife.
-
----
-
-## 39. Autenticação
-
-Será utilizado:
-
-```text
-ASP.NET Core Identity
-```
-
-com interface própria do Reset Service.
-
-Não haverá:
-
-- cadastro público;
-- login Google;
-- login Microsoft;
-- recuperação via e-mail;
-- dependência externa.
-
----
-
-## 40. Identity como infraestrutura
-
-ASP.NET Core Identity será utilizado para mecanismos como:
-
-- usuários;
-- hash de senha;
-- autenticação;
-- bloqueio temporário;
-- credenciais temporárias;
-- invalidação de segurança.
-
-Os perfis funcionais continuam sendo somente:
-
-```text
-Administrador
-Técnico
-```
-
----
-
-## 41. Sessões
-
-A autenticação utilizará cookie protegido.
-
-Regras de segurança definidas em `security-requirements.md` deverão ser implementadas, incluindo:
-
-- expiração;
-- logout;
-- invalidação;
-- bloqueio;
-- troca obrigatória de credenciais temporárias.
-
----
-
-## 42. PDF
-
-A implementação inicialmente utilizará:
-
-```text
-PDFsharp
-+
-MigraDoc
-```
-
-A biblioteca deverá ser utilizada exclusivamente no servidor.
-
-Nenhum computador cliente precisará possuir gerador de PDF instalado.
-
----
-
-## 43. Snapshot de conclusão
-
-Cada conclusão deverá possuir fotografia histórica imutável.
-
-Estrutura conceitual:
-
-```text
-ServiceConclusion
-│
-├── ConclusionNumber
-├── Date
-├── Responsible
-├── Client
-├── Equipment
-├── Route
-├── Steps
-├── Observations
-├── CompanyData
-└── DocumentSettings
-```
-
----
-
-## 44. Persistência do snapshot
-
-O snapshot poderá ser persistido como documento JSON versionado associado à conclusão.
-
-Exemplo conceitual:
-
-```text
-ServiceConclusion
-
-Id
-ServiceId
-ConclusionNumber
-CreatedAtUtc
-CreatedByUserId
-SnapshotSchemaVersion
-SnapshotJson
-```
-
-Esse conteúdo será imutável depois da conclusão correspondente.
-
----
-
-## 45. Geração histórica
-
-Fluxo:
-
-```text
-Serviço
-   ↓
-Conclusão
-   ↓
-Snapshot imutável
-   ↓
-Gerador documental
-   ↓
-PDF
-```
-
-Regenerar um documento antigo utilizará o snapshot da conclusão correspondente, não o estado atual do serviço.
-
----
-
-## 46. Backup SQLite
-
-Backup do banco não será realizado simplesmente copiando arbitrariamente o arquivo SQLite durante uso.
-
-Será utilizado mecanismo consistente de backup do SQLite.
-
-Depois, o pacote poderá incluir:
-
-```text
-snapshot do banco
-+
-manifesto
-+
-arquivos persistentes essenciais
-```
-
-conforme `backup-recovery-spec.md`.
-
----
-
-## 47. Hosting
-
-A aplicação será hospedada diretamente pelo Kestrel.
-
-Não será requisito inicial utilizar IIS.
-
-Topologia:
-
-```text
-Browser
-   ↓
-HTTPS
-   ↓
-Kestrel
-   ↓
-ASP.NET Core
-```
-
----
-
-## 48. Serviço do Windows
-
-A aplicação será instalada como Serviço do Windows.
-
-Nome conceitual:
-
-```text
-Technolife Reset Service
-```
-
-Inicialização:
-
-```text
-Automatic
-```
-
-Após reinicialização normal da máquina:
-
-```text
-Windows inicia
-      ↓
-Reset Service inicia
-      ↓
-endereço volta a responder na LAN
-```
-
----
-
-## 49. Deploy
-
-A aplicação será publicada inicialmente para:
-
-```text
-win-x64
-```
-
-como implantação self-contained.
-
-O ambiente de produção não deverá depender obrigatoriamente de instalação separada do runtime .NET.
-
----
-
-## 50. Separação de aplicação e dados
-
-Estrutura conceitual:
-
-```text
-C:\Program Files\Technolife\ResetService\
-└── aplicação
-
-C:\ProgramData\Technolife\ResetService\
-├── data\
-├── logs\
-├── assets\
-├── backups\
-└── config\
-```
-
-Arquivos binários e dados persistentes deverão permanecer separados.
-
----
-
-## 51. Migrações
-
-Mudanças no schema serão gerenciadas através de migrations do EF Core.
-
-Produção não deverá executar mudanças de schema de maneira invisível e descontrolada apenas porque a aplicação iniciou.
-
-Atualizações deverão possuir processo explícito.
-
----
-
-## 52. Fluxo de atualização
-
-Conceitualmente:
-
-```text
-Nova versão
-     ↓
-Backup recomendado
-     ↓
-Modo de manutenção
-     ↓
-Parar serviço
-     ↓
-Aplicar migração
-     ↓
-Atualizar binários
-     ↓
-Iniciar serviço
-     ↓
-Verificar funcionamento
-```
-
----
-
-## 53. API
-
-Não haverá frontend e backend como dois produtos independentes.
-
-A aplicação será única.
-
-Endpoints internos poderão existir para:
-
+- headings;
+- listas;
 - checklist;
-- observações;
-- status;
-- SignalR;
-- operações administrativas.
+- código;
+- links;
+- imagens;
+- tabelas simples;
+- blocos de aviso.
 
-Todos pertencem ao mesmo backend.
+O formato persistido deverá permitir renderização segura e versionamento previsível.
 
----
+## 11. Arquivos e imagens
 
-## 54. Dependências principais
+Uploads serão armazenados centralmente na máquina host, fora de caminhos públicos arbitrários.
 
-O conjunto base deverá permanecer pequeno:
+O banco guardará metadados e relacionamento com documentos.
 
-```text
-.NET
-ASP.NET Core
-EF Core
-SQLite
-ASP.NET Core Identity
-SignalR
-PDFsharp / MigraDoc
-```
+Backup deverá considerar banco e uploads como uma unidade operacional.
 
-Dependências adicionais deverão possuir justificativa concreta.
+## 12. Segurança
 
----
+A aplicação continuará utilizando princípios básicos obrigatórios:
 
-## 55. Componentes não utilizados
+- autenticação;
+- autorização no backend;
+- antiforgery;
+- validação de entrada;
+- cookies seguros;
+- proteção de senha;
+- logs sem segredos;
+- controle de acesso a arquivos.
 
-A versão 1.0 não utilizará sem necessidade comprovada:
+Documentações não devem ser usadas como cofre de senhas. Credenciais sensíveis deverão permanecer em solução apropriada e, quando necessário, ser apenas referenciadas pelo documento.
 
-```text
-Docker
-Kubernetes
-Redis
-RabbitMQ
-Kafka
-Elasticsearch
-React
-Angular
-Vue
-Node.js como runtime
-microsserviços
-banco em nuvem
-autenticação externa
-serviços externos obrigatórios
-```
+## 13. Implantação
 
----
+A aplicação será publicada centralmente para Windows.
 
-## 56. Princípios arquiteturais
+A máquina poderá ser desktop, notebook ou Windows Server, desde que permaneça disponível durante o uso.
 
-1. Uma única implantação central.
-2. Navegadores são clientes.
-3. Nenhum acesso direto das estações ao banco.
-4. Nenhuma dependência de internet em runtime.
-5. Backend é a autoridade das regras de negócio.
-6. Banco é a fonte persistente de verdade.
-7. SignalR distribui mudanças, mas não substitui persistência.
-8. Escritas passam por fila controlada.
-9. Fila não substitui controle de concorrência.
-10. Alterações só são confirmadas depois do COMMIT.
-11. Usuários podem trabalhar simultaneamente no mesmo serviço.
-12. Estado atualizado deve chegar automaticamente aos navegadores interessados.
-13. Operações concorrentes não podem causar sobrescrita silenciosa.
-14. Transações devem permanecer curtas.
-15. Arquitetura deverá continuar proporcional ao porte real da aplicação.
-
----
-
-## 57. Decisão Final
-
-A arquitetura-base aprovada para o Reset Service v1.0 será:
+A experiência desejada permanece:
 
 ```text
-                    LAN / HTTPS
-                         │
-            ┌────────────▼────────────┐
-            │    ResetService.Web     │
-            │                         │
-            │ ASP.NET Core 10         │
-            │ Razor Pages             │
-            │ Identity                │
-            │ SignalR                 │
-            └────────────┬────────────┘
-                         │
-            ┌────────────▼────────────┐
-            │    Command Processing   │
-            │                         │
-            │ System.Threading.       │
-            │ Channels                │
-            │                         │
-            │ Optimistic Concurrency  │
-            └────────────┬────────────┘
-                         │
-            ┌────────────▼────────────┐
-            │    ResetService.Core    │
-            │                         │
-            │ Regras de negócio       │
-            │ Casos de uso            │
-            └────────────┬────────────┘
-                         │
-            ┌────────────▼────────────┐
-            │ Infrastructure          │
-            │                         │
-            │ EF Core                 │
-            │ SQLite / WAL            │
-            │ PDFsharp / MigraDoc     │
-            │ Backup / Filesystem     │
-            └────────────┬────────────┘
-                         │
-                         ▼
-                    SQLite local
+instalar/configurar uma vez
+        ↓
+iniciar serviço/aplicação
+        ↓
+usuários acessam pela LAN
 ```
 
----
+Atualizações serão feitas apenas na máquina host.
 
-## 58. Estado da decisão
+## 14. Desempenho esperado
 
-**PLANNING-012 — Arquitetura e Stack Tecnológica: CONCLUÍDA E APROVADA.**
+Escala alvo inicial:
 
-As decisões sobre uso simultâneo, sincronização em tempo real, fila de alterações e acesso por endereço amigável na LAN fazem parte formal da arquitetura.
+- poucos usuários simultâneos;
+- centenas ou milhares de documentos;
+- operações curtas;
+- leitura muito mais frequente que escrita.
+
+O sistema deve priorizar abertura rápida, pesquisa ágil e interface responsiva, sem engenharia para escala hipotética.
+
+## 15. Regra arquitetural
+
+Toda nova dependência ou camada deverá justificar claramente qual problema real resolve.
+
+A preferência é:
+
+> menos componentes, menos processos e menos abstrações, mantendo integridade dos dados e boa experiência de uso.
