@@ -9,24 +9,22 @@
 
 ## Trabalho atual
 
-- Backlog item: BL-003 — Persistência EF Core + SQLite
-- Tarefa: BL-003/T04 — Validar WAL no SQLite criado pelo EF Core
+- Backlog item: BL-004 — Infraestrutura de concorrência
+- Tarefa: BL-004/T01 — Implementar token Version e detectar gravação obsoleta
 - Status: Em validação
 - Responsável técnico: Revisão ChatGPT
 
 ## Último estado aprovado
 
-- Último commit aprovado: 4e9519d
-- Mensagem: chore(persistence): add migration baseline
+- Último commit aprovado: ee82f08
+- Mensagem: test(persistence): validate sqlite wal mode
 - Branch: main
 - Working tree: Clean
 - Última verificação: 2026-08-16
 
 ## Concluído nesta sprint
 
-- BL-003/T01 — EF Core SQLite e DbContext base
-- BL-003/T02 — Registro de persistência e acesso real ao SQLite
-- BL-003/T03 — Migrations e criação controlada do banco
+- BL-003 — Persistência EF Core + SQLite
 
 ## Bloqueios
 
@@ -34,11 +32,12 @@ Nenhum.
 
 ## Próximo passo
 
-Verificar no GitHub a entrega de BL-003/T04.
+Verificar no GitHub a entrega de BL-004/T01.
 
 ## Observações imediatas
 
-- WAL foi validado em SQLite real.
-- WAL permaneceu ativo após reabertura da conexão.
-- Nenhuma configuração manual foi necessária.
-- BL-004 continua fora de escopo.
+- BL-003 concluído.
+- Concorrência utiliza Version gerenciado pela aplicação.
+- Esta subtarefa valida detecção técnica de estado obsoleto.
+- Tradução funcional do conflito ainda não foi implementada.
+- Command Queue continua fora de escopo.

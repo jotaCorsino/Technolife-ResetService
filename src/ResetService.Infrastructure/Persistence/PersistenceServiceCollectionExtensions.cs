@@ -2,6 +2,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ResetService.Infrastructure.Persistence.Concurrency;
 
 namespace ResetService.Infrastructure.Persistence;
 
@@ -31,7 +32,12 @@ public static class PersistenceServiceCollectionExtensions
             DataSource = databasePath,
         }.ToString();
 
-        services.AddDbContext<ResetServiceDbContext>(options => options.UseSqlite(connectionString));
+        services.AddSingleton<VersionConcurrencyInterceptor>();
+        services.AddDbContext<ResetServiceDbContext>((serviceProvider, options) =>
+        {
+            options.UseSqlite(connectionString);
+            options.AddInterceptors(serviceProvider.GetRequiredService<VersionConcurrencyInterceptor>());
+        });
 
         return services;
     }
