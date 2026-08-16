@@ -2,7 +2,6 @@ using System.Globalization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using Serilog.Events;
 
 namespace ResetService.Infrastructure.Logging;
 
@@ -46,10 +45,6 @@ public static class TechnicalLoggingBuilderExtensions
         var technicalLogger = new LoggerConfiguration()
             .MinimumLevel.Verbose()
             .Enrich.FromLogContext()
-            .Filter.ByIncludingOnly(logEvent => IsEnabledByApplicationLogLevel(
-                configuration,
-                GetSourceContext(logEvent),
-                ToMicrosoftLogLevel(logEvent.Level)))
             .WriteTo.File(
                 logFilePath,
                 outputTemplate: OutputTemplate,
@@ -79,63 +74,5 @@ public static class TechnicalLoggingBuilderExtensions
         }
 
         return value;
-    }
-
-    private static bool IsEnabledByApplicationLogLevel(
-        IConfiguration configuration,
-        string? categoryName,
-        LogLevel logLevel)
-    {
-        LogLevel? defaultMinimumLevel = null;
-        LogLevel? categoryMinimumLevel = null;
-        var longestMatchingCategoryLength = -1;
-
-        foreach (var configuredLevel in configuration.GetSection("Logging:LogLevel").GetChildren())
-        {
-            if (!Enum.TryParse<LogLevel>(configuredLevel.Value, ignoreCase: true, out var candidateLevel))
-            {
-                continue;
-            }
-
-            if (string.Equals(configuredLevel.Key, "Default", StringComparison.OrdinalIgnoreCase))
-            {
-                defaultMinimumLevel = candidateLevel;
-                continue;
-            }
-
-            if (categoryName is not null &&
-                categoryName.StartsWith(configuredLevel.Key, StringComparison.OrdinalIgnoreCase) &&
-                (categoryName.Length == configuredLevel.Key.Length ||
-                 categoryName[configuredLevel.Key.Length] == '.') &&
-                categoryName.Length > longestMatchingCategoryLength)
-            {
-                categoryMinimumLevel = candidateLevel;
-                longestMatchingCategoryLength = configuredLevel.Key.Length;
-            }
-        }
-
-        return logLevel >= (categoryMinimumLevel ?? defaultMinimumLevel ?? LogLevel.Information);
-    }
-
-    private static string? GetSourceContext(LogEvent logEvent)
-    {
-        return logEvent.Properties.TryGetValue("SourceContext", out var sourceContext) &&
-               sourceContext is ScalarValue { Value: string categoryName }
-            ? categoryName
-            : null;
-    }
-
-    private static LogLevel ToMicrosoftLogLevel(LogEventLevel logEventLevel)
-    {
-        return logEventLevel switch
-        {
-            LogEventLevel.Verbose => LogLevel.Trace,
-            LogEventLevel.Debug => LogLevel.Debug,
-            LogEventLevel.Information => LogLevel.Information,
-            LogEventLevel.Warning => LogLevel.Warning,
-            LogEventLevel.Error => LogLevel.Error,
-            LogEventLevel.Fatal => LogLevel.Critical,
-            _ => throw new ArgumentOutOfRangeException(nameof(logEventLevel), logEventLevel, null),
-        };
     }
 }

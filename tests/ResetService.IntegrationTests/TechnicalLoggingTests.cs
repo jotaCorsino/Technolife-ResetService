@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ResetService.Infrastructure.Logging;
+using Serilog.Extensions.Logging;
 
 namespace ResetService.IntegrationTests;
 
@@ -145,7 +146,7 @@ public sealed class TechnicalLoggingTests
     }
 
     [Fact]
-    public async Task RegistrationUsesExistingLoggingLogLevelConfiguration()
+    public async Task RegistrationRespectsMicrosoftLoggingFilters()
     {
         var logDirectory = CreateUniqueLogDirectory();
         var logFilePath = Path.Combine(logDirectory, "resetservice-.log");
@@ -153,10 +154,13 @@ public sealed class TechnicalLoggingTests
         try
         {
             var configuration = CreateConfiguration(logFilePath, "1024", "2");
-            configuration["Logging:LogLevel:Default"] = "Warning";
             var services = new ServiceCollection();
 
-            services.AddLogging(loggingBuilder => loggingBuilder.AddResetServiceTechnicalLogging(configuration));
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.AddResetServiceTechnicalLogging(configuration);
+                loggingBuilder.AddFilter<SerilogLoggerProvider>(category: null, level: LogLevel.Warning);
+            });
 
             await using (var serviceProvider = services.BuildServiceProvider())
             {
