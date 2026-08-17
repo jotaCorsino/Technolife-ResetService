@@ -10,6 +10,7 @@ builder.Logging.AddResetServiceTechnicalLogging(builder.Configuration);
 builder.Services.AddRazorPages();
 builder.Services.AddResetServicePersistence(builder.Configuration);
 builder.Services.AddResetServiceCommands(builder.Configuration);
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -27,6 +28,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.MapHealthChecks("/health");
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
