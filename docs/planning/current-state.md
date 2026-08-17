@@ -9,22 +9,22 @@
 
 ## Trabalho atual
 
-- Backlog item: Não aplicável — manutenção de segurança
-- Tarefa: MAINT-001 — Atualizar baseline Microsoft para .NET 10.0.11
+- Backlog item: BL-007 — ASP.NET Core Identity
+- Tarefa: BL-007/T01 — Integrar persistência base do ASP.NET Core Identity
 - Status: Em validação
 - Responsável técnico: Revisão ChatGPT
 
 ## Último estado aprovado
 
-- Último commit aprovado: e229d90
-- Mensagem: docs(planning): start sprint 04
+- Último commit aprovado: 460596b
+- Mensagem: chore(deps): update microsoft baseline to 10.0.11
 - Branch: main
 - Working tree: Clean
 - Última verificação: 2026-08-17
 
 ## Concluído nesta sprint
 
-Nenhum.
+MAINT-001 — Baseline Microsoft 10.0.11
 
 ## Bloqueios
 
@@ -32,10 +32,14 @@ Nenhum.
 
 ## Próximo passo
 
-Verificar no GitHub a atualização para .NET 10.0.11 e, se aprovada, executar BL-007/T01.
+Verificar no GitHub a entrega de BL-007/T01.
 
 ## Observações imediatas
 
-- Manutenção motivada pelo servicing de segurança 10.0.11.
-- Nenhuma funcionalidade foi alterada.
-- BL-007/T01 permanece não implementada.
+- MAINT-001 aprovada.
+- Um único SQLite e um único ResetServiceDbContext preservados.
+- ApplicationUser utiliza Guid e participa da concorrência otimista.
+- T01 cobre somente persistência/schema do Identity.
+- Serviços Identity/roles ficam para próxima subtarefa.
+- BL-008 continua responsável pelo primeiro Administrador.
+- BL-009 continua responsável por login/logout/sessão.

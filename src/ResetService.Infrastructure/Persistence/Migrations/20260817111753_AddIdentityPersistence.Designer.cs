@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ResetService.Infrastructure.Persistence;
 
@@ -10,9 +11,11 @@ using ResetService.Infrastructure.Persistence;
 namespace ResetService.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ResetServiceDbContext))]
-    partial class ResetServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260817111753_AddIdentityPersistence")]
+    partial class AddIdentityPersistence
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.11");
