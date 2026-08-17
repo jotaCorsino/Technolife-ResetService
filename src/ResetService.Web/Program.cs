@@ -1,6 +1,7 @@
 using ResetService.Infrastructure.Commands;
 using ResetService.Infrastructure.Logging;
 using ResetService.Infrastructure.Persistence;
+using ResetService.Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddResetServicePersistence(builder.Configuration);
 builder.Services.AddResetServiceCommands(builder.Configuration);
 builder.Services.AddHealthChecks();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -29,6 +31,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapHealthChecks("/health");
+app.MapHub<RealtimeHub>("/hubs/realtime");
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
