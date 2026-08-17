@@ -3,32 +3,28 @@
 ## Estado geral
 
 - Versão alvo: v1.0
-- Fase: 1 — Fundação da solução
-- Sprint: 03 — Pipeline de comandos e infraestrutura
+- Fase: 2 — Identidade e segurança
+- Sprint: 04 — Identity e primeiro acesso
 - Status da sprint: Em andamento
 
 ## Trabalho atual
 
-- Backlog item: BL-006 — Infraestrutura transversal
-- Tarefa: BL-006/T04 — Estruturar SignalR básico
-- Status: Em validação
-- Responsável técnico: Revisão ChatGPT
+- Backlog item: BL-007 — ASP.NET Core Identity
+- Tarefa: BL-007/T01 — Integrar persistência base do ASP.NET Core Identity
+- Status: Pronta para implementação
+- Responsável técnico: Codex
 
 ## Último estado aprovado
 
-- Último commit aprovado: f5a8edf
-- Mensagem: feat(health): add basic liveness endpoint
+- Último commit aprovado: 7c46ab5
+- Mensagem: feat(realtime): add basic signalr infrastructure
 - Branch: main
 - Working tree: Clean
 - Última verificação: 2026-08-17
 
 ## Concluído nesta sprint
 
-- BL-005 — Command Queue
-- PLANNING-024 — Realinhamento operacional para execução sob demanda
-- BL-006/T01 — Logging técnico persistente base
-- BL-006/T02 — Tratamento global de erros HTTP
-- BL-006/T03 — Health check básico
+Nenhum.
 
 ## Bloqueios
 
@@ -36,12 +32,15 @@ Nenhum.
 
 ## Próximo passo
 
-Verificar no GitHub a entrega de BL-006/T04 e, se aprovada, concluir BL-006 e Sprint 03.
+Executar BL-007/T01 — Integrar persistência base do ASP.NET Core Identity.
 
 ## Observações imediatas
 
-- T01–T03 aprovadas.
-- SignalR server básico registrado e mapeado.
-- Hub ainda não transporta dados nem possui métodos de negócio.
-- Autenticação do hub será integrada após Identity, antes do uso funcional.
-- Grupos, eventos e reconexão permanecem para a Fase 8.
+- Sprint 03 concluída.
+- BL-005 e BL-006 concluídos.
+- Sprint 04 cobre BL-007, BL-008 e BL-009.
+- T01 tratará somente da fundação de persistência do Identity.
+- Bootstrap do primeiro Administrador pertence ao BL-008.
+- Login, logout e sessão pertencem ao BL-009.
+- Hardening de autenticação, policies, antiforgery, Data Protection, security headers e proteção inicial do SignalR permanecem para a Sprint 05.
+- O RealtimeHub continua sem uso funcional e sem dados até a integração de segurança apropriada.
